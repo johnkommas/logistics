@@ -1761,15 +1761,29 @@ if (window.location.pathname.includes('/procedures/')) {
     console.log("Warehouse map initialization condition met");
     window.addEventListener('load', function() {
         console.log("Window loaded, initializing warehouse map");
-        initWarehouseMap();
 
-        // Initialize rack tooltips
-        initRackTooltips();
+        // Check if we're on the receiving page
+        if (window.location.pathname.includes('/procedures/receiving')) {
+            console.log("Receiving page detected, initializing receiving process");
+            // Initialize receiving process
+            initReceivingProcess();
 
-        // Show welcome toast
-        setTimeout(() => {
-            showToast('Καλώς ήρθατε, Γιώργο! Η λίστα συλλογής είναι έτοιμη.', 'success');
-        }, 1000);
+            // Show welcome toast
+            setTimeout(() => {
+                showToast('Καλώς ήρθατε, Γιώργο! Το δελτίο παραλαβής είναι έτοιμο.', 'success');
+            }, 1000);
+        } else {
+            // Initialize warehouse map for other procedures
+            initWarehouseMap();
+
+            // Initialize rack tooltips
+            initRackTooltips();
+
+            // Show welcome toast
+            setTimeout(() => {
+                showToast('Καλώς ήρθατε, Γιώργο! Η λίστα συλλογής είναι έτοιμη.', 'success');
+            }, 1000);
+        }
 
         // Add connectivity status toggle for demo
         const connectivityStatus = document.querySelector('.connectivity-status');
