@@ -11,6 +11,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Animations for notifications */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
+        .notification-popup {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -653,8 +669,8 @@
         <p><strong>Δελτίο Παραλαβής:</strong> GR‐PO‐2023‐231</p>
         <p><strong>Προτεραιότητα:</strong> Κανονική</p>
         <p><strong>Τρέχουσα Θέση:</strong> Dock Door 3</p>
-        <p><strong>Προϊόν:</strong> VID‐TB‐150</p>
-        <p><strong>Ποσότητα:</strong> 10 τεμάχια</p>
+        <p><strong>Προϊόν:</strong> <span id="current-task-product">VID‐TB‐150</span></p>
+        <p><strong>Ποσότητα:</strong> <span id="current-task-quantity">10 τεμάχια</span></p>
 
         <hr style="margin: 12px 0;">
 
@@ -692,7 +708,7 @@
         ">
 
       <!-- Όνομα Χάρτη -->
-      <h4 style="text-align: center; margin-bottom: 12px;"><i class="fas fa-map"></i> Χάρτης Παραλαβής</h4>
+      <h4 style="text-align: left; margin-bottom: 12px;"><i class="fas fa-map"></i> Χάρτης Παραλαβής</h4>
 
       <!-- 1) Row με Docks (D1 … D7) -->
       <div class="docks-row" style="
@@ -711,7 +727,14 @@
               font-weight: bold;
             ">D1</div>
         <div class="dock" data-dock="D2" style="background: #2196f3; color: #fff; width: 40px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold;">D2</div>
-        <div class="dock" data-dock="D3" style="background: #2196f3; color: #fff; width: 40px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold;">D3</div>
+        <div class="dock" data-dock="D3" style="background: #2196f3; color: #fff; width: 40px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold; position: relative;">
+          D3
+          <!-- Truck with Container at D3 -->
+          <div style="position: absolute; top: -40px; left: 0; z-index: 10;">
+            <i class="fas fa-truck" style="font-size: 36px; color: #555;"></i>
+            <i class="fas fa-container-storage" style="font-size: 20px; color: #f57c00; position: absolute; top: 8px; right: -10px;"></i>
+          </div>
+        </div>
         <div class="dock" data-dock="D4" style="background: #2196f3; color: #fff; width: 40px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold;">D4</div>
         <div class="dock" data-dock="D5" style="background: #2196f3; color: #fff; width: 40px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold;">D5</div>
         <div class="dock" data-dock="D6" style="background: #2196f3; color: #fff; width: 40px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold;">D6</div>
@@ -788,21 +811,6 @@
         <div class="rack" data-rack="R20" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R20</div>
       </div>
 
-      <!-- 5) Forklift Icon ( θέση αρχικά πάνω από το "D3" ) -->
-      <i
-        id="forklift"
-        class="fas fa-truck-loading"
-        style="
-          position: absolute;
-          left: calc(50% - 18px); /* αρχικά περίπου πάνω από D3 */
-          top: 75px;            /* λίγο πιο κάτω από τα docks */
-          font-size: 36px;
-          color: #ff9800;
-          transition: left 1s ease, top 1s ease;
-          z-index: 10;
-        "
-        aria-hidden="true"
-      ></i>
     </div>
     <!-- =============== Τέλος Κεντρικής Στήλης =============== -->
 
@@ -818,6 +826,37 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
           ">
         <h4 style="margin-bottom: 8px; font-size: 1.1rem;">Διαδικασία Παραλαβής</h4>
+
+        <!-- Progress Bar & Checkpoints -->
+        <div class="progress-container" style="margin-top: 16px;">
+          <!-- Checkpoint Dots -->
+          <div class="progress-checkpoints" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+            <div class="progress-checkpoint">
+              <div class="checkpoint-dot" style="width: 16px; height: 16px; border-radius: 50%; background-color: #bbb; border: 2px solid #bbb;"></div>
+              <div class="checkpoint-label" style="font-size: 0.8rem; margin-top: 4px;">A</div>
+            </div>
+            <div class="progress-checkpoint">
+              <div class="checkpoint-dot" style="width: 16px; height: 16px; border-radius: 50%; background-color: #bbb; border: 2px solid #bbb;"></div>
+              <div class="checkpoint-label" style="font-size: 0.8rem; margin-top: 4px;">B</div>
+            </div>
+            <div class="progress-checkpoint">
+              <div class="checkpoint-dot" style="width: 16px; height: 16px; border-radius: 50%; background-color: #bbb; border: 2px solid #bbb;"></div>
+              <div class="checkpoint-label" style="font-size: 0.8rem; margin-top: 4px;">C</div>
+            </div>
+            <div class="progress-checkpoint">
+              <div class="checkpoint-dot" style="width: 16px; height: 16px; border-radius: 50%; background-color: #bbb; border: 2px solid #bbb;"></div>
+              <div class="checkpoint-label" style="font-size: 0.8rem; margin-top: 4px;">D</div>
+            </div>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="progress-bar-container" style="background-color: #e0e0e0; height: 8px; border-radius: 4px; overflow: hidden;">
+            <div id="receiving-progress" class="progress-bar-fill" style="background-color: #4caf50; height: 100%; width: 0%; transition: width 0.5s ease-in-out;"></div>
+          </div>
+
+          <!-- Percentage Text -->
+          <div class="progress-percentage" style="text-align: right; font-size: 0.8rem; margin-top: 4px;">0% ολοκληρωμένο</div>
+        </div>
       </div>
 
       <!-- Step A: Δελτίο Παραλαβής & Εντολή -->
@@ -882,18 +921,11 @@
           <p><strong>Παλέτα:</strong> <span id="palletBarcodeDisplay"></span></p>
           <p><strong>Αναμενόμενα:</strong> <span id="expectedQtyB"></span> τεμ.</p>
           <p><strong>Σκαναρισμένα:</strong> <span id="scannedQtyB">0</span> / <span id="expectedQtyAgain"></span></p>
-          <button id="scan-item-btn" style="
-                margin-top: 8px;
-                padding: 6px 12px;
-                font-size: 14px;
-                border: none;
-                background: #4caf50;
-                color: #fff;
-                border-radius: 4px;
-                cursor: pointer;
-              ">
-            <i class="fas fa-box" style="margin-right: 4px;"></i> Σάρωση Είδους
-          </button>
+
+          <!-- Placeholder for item scanning stage -->
+          <div id="item-scanning-stage-placeholder"></div>
+
+          <!-- Μηνύματα σφαλμάτων και ειδοποιήσεων -->
           <div id="caseB1" style="display: none; margin-top: 8px; color: #e53935;">
             Σφάλμα: Άγνωστο barcode.
           </div>
@@ -982,6 +1014,42 @@
                   <td style="padding: 4px;">BTL-WN-10</td>
                   <td style="padding: 4px;">20</td>
                 </tr>
+                <tr>
+                  <td style="padding: 4px;">KNB-DR-35</td>
+                  <td style="padding: 4px;">15</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px;">PLT-WD-60</td>
+                  <td style="padding: 4px;">8</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px;">BLT-ST-12</td>
+                  <td style="padding: 4px;">50</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px;">HMR-TL-20</td>
+                  <td style="padding: 4px;">12</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px;">SCR-PH-30</td>
+                  <td style="padding: 4px;">25</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px;">NUT-HX-08</td>
+                  <td style="padding: 4px;">100</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px;">WRN-AD-15</td>
+                  <td style="padding: 4px;">10</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px;">DRL-BT-18</td>
+                  <td style="padding: 4px;">5</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px;">SAW-CT-25</td>
+                  <td style="padding: 4px;">8</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -1046,5 +1114,99 @@
 
     <script src="{{ url_for('static', path='/js/main.js') }}"></script>
     <script src="{{ url_for('static', path='/js/apple-animations.js') }}"></script>
+
+    <!-- Ενδιάμεσο στάδιο σάρωσης ειδών (Popup) -->
+    <div id="item-scanning-stage" style="
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        max-width: 600px;
+        background-color: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(5px);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    ">
+        <div style="background: #4a148c; color: #fff; padding: 8px 12px; border-radius: 4px; margin-bottom: 12px;">
+            <strong>Σάρωση Ειδών Παλέτας (<span id="current-items-count">0</span> από 12)</strong>
+        </div>
+
+        <div id="item-scan-container" style="margin-bottom: 16px;">
+            <p><strong>Είδος προς σάρωση:</strong> <span id="current-item-to-scan">-</span></p>
+            <p><strong>Περιγραφή:</strong> <span id="current-item-description">-</span></p>
+            <p><strong>Αναμενόμενη ποσότητα:</strong> <span id="current-item-expected-qty">-</span></p>
+
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <input type="text" id="scanned-item-code" placeholder="Κωδικός είδους" style="
+                    flex: 2;
+                    padding: 8px;
+                    border: 1px solid #bdbdbd;
+                    border-radius: 4px;
+                ">
+                <input type="number" id="scanned-item-qty" placeholder="Ποσότητα" style="
+                    flex: 1;
+                    padding: 8px;
+                    border: 1px solid #bdbdbd;
+                    border-radius: 4px;
+                ">
+            </div>
+
+            <button id="scan-item-btn" style="
+                margin-top: 8px;
+                padding: 6px 12px;
+                font-size: 14px;
+                border: none;
+                background: #4caf50;
+                color: #fff;
+                border-radius: 4px;
+                cursor: pointer;
+                width: 100%;
+            ">
+                <i class="fas fa-box" style="margin-right: 4px;"></i> Σάρωση Είδους
+            </button>
+        </div>
+
+        <!-- Πρόοδος σάρωσης ειδών -->
+        <div style="margin-top: 16px;">
+            <p><strong>Πρόοδος σάρωσης ειδών:</strong> <span id="scanned-items-count">0</span>/12</p>
+            <div style="background: #e0e0e0; height: 8px; border-radius: 4px; width: 100%; overflow: hidden; margin-top: 8px;">
+                <div id="items-scan-progress" style="background: #4caf50; width: 0%; height: 100%; transition: width 0.3s ease-in-out;"></div>
+            </div>
+        </div>
+
+        <!-- Λίστα σκαναρισμένων ειδών -->
+        <div style="margin-top: 16px;">
+            <h5>Σκαναρισμένα Είδη:</h5>
+            <div id="scanned-items-list" style="
+                max-height: 200px;
+                overflow-y: auto;
+                border: 1px solid #e0e0e0;
+                border-radius: 4px;
+                padding: 8px;
+                margin-top: 8px;
+            ">
+                <!-- Εδώ θα προστίθενται δυναμικά τα σκαναρισμένα είδη -->
+            </div>
+        </div>
+
+        <button id="complete-items-scan-btn" style="
+            margin-top: 16px;
+            padding: 8px 16px;
+            font-size: 16px;
+            border: none;
+            background: #ff9800;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            display: none;
+        ">
+            <i class="fas fa-check-circle" style="margin-right: 6px;"></i> Ολοκλήρωση Σάρωσης Ειδών
+        </button>
+    </div>
 </body>
 </html>

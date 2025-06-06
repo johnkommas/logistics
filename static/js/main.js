@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initTabNavigation();
 
     // Initialize receiving process if on receiving page
-    if (document.getElementById('receiving-map')) {
+    if (document.getElementById('receiving-progress')) {
         initReceivingProcess();
     }
 });
@@ -1818,7 +1818,6 @@ function initReceivingProcess() {
   let currentStep = 'A';
 
   // DOM elements:
-  const forklift = document.getElementById('forklift');
   const receivingProgress = document.getElementById('receiving-progress');
   const progressPercentage = document.querySelector('.progress-percentage');
   const checkpoints = document.querySelectorAll('.progress-checkpoint');
@@ -1878,15 +1877,424 @@ function initReceivingProcess() {
     markCheckpoint(0);
     updateProgressBar(0);
     displayStep('B');
+
+    // Animate palette movement from truck to QCA
+    animatePaletteMovement();
   });
 
+  // Συνάρτηση για την κίνηση της παλέτας από το φορτηγό στη Ζώνη Ελέγχου
+  function animatePaletteMovement() {
+    // Βρίσκουμε τα απαραίτητα στοιχεία
+    const mapCenter = document.querySelector('.map-center');
+    const truckElement = document.querySelector('.dock[data-dock="D3"] .fa-truck');
+    const qcArea = document.querySelector('.qc-area');
+
+    if (!mapCenter || !truckElement || !qcArea) {
+      console.error("Required elements not found for palette animation");
+      return;
+    }
+
+    // Δημιουργία του στοιχείου της παλέτας
+    const paletteElement = document.createElement('div');
+    paletteElement.className = 'moving-palette';
+    paletteElement.style.position = 'absolute';
+    paletteElement.style.zIndex = '100';
+    paletteElement.style.transition = 'all 2s ease-in-out';
+
+    // Προσθήκη της εικόνας της παλέτας
+    paletteElement.innerHTML = `
+      <img src="/static/img/pallete.png" alt="Palette" style="width: 60px; height: auto;">
+    `;
+
+    // Υπολογισμός των θέσεων
+    const truckRect = truckElement.getBoundingClientRect();
+    const mapRect = mapCenter.getBoundingClientRect();
+    const qcRect = qcArea.getBoundingClientRect();
+
+    // Αρχική θέση (δίπλα στο D3, μετακινημένη περισσότερο προς τα δεξιά)
+    const startX = truckRect.left - mapRect.left + truckRect.width + 50; // Μετακίνηση περισσότερο προς τα δεξιά
+    const startY = truckRect.top - mapRect.top + (truckRect.height / 2);
+
+    // Τελική θέση (μέση της Ζώνης Ελέγχου με το ίδιο x)
+    const endX = startX; // Διατηρούμε το ίδιο x για οριζόντια κίνηση
+    const endY = qcRect.top - mapRect.top + (qcRect.height / 2) - 30;
+
+    // Τοποθέτηση της παλέτας στην αρχική θέση
+    paletteElement.style.left = `${startX}px`;
+    paletteElement.style.top = `${startY}px`;
+
+    // Προσθήκη της παλέτας στο DOM
+    mapCenter.appendChild(paletteElement);
+
+    // Μικρή καθυστέρηση πριν ξεκινήσει η κίνηση
+    setTimeout(() => {
+      // Κίνηση προς τα κάτω (στη μέση της Ζώνης Ελέγχου)
+      paletteElement.style.top = `${endY}px`;
+
+      // Μετά την ολοκλήρωση της κίνησης, ξεπακετάρουμε τα αγαθά
+      setTimeout(() => {
+        // Αφαιρούμε την παλέτα
+        mapCenter.removeChild(paletteElement);
+
+        // Ξεπακετάρουμε τα αγαθά σε 12 κουτιά
+        unpackGoodsToBoxes(qcArea, qcRect, mapRect);
+      }, 2000); // Ο χρόνος πρέπει να είναι ίσος με το χρόνο του transition
+    }, 500);
+  }
+
+  // Συνάρτηση για το ξεπακετάρισμα των αγαθών σε 12 κουτιά
+  function unpackGoodsToBoxes(qcArea, qcRect, mapRect) {
+    // Δημιουργία container για τα κουτιά
+    const boxesContainer = document.createElement('div');
+    boxesContainer.className = 'unpacked-boxes';
+    boxesContainer.style.position = 'absolute';
+    boxesContainer.style.left = `${qcRect.left - mapRect.left}px`;
+    boxesContainer.style.top = `${qcRect.top - mapRect.top + qcRect.height/2 - 20}px`; // Τοποθέτηση στη μέση του QCA
+    boxesContainer.style.width = `${qcRect.width}px`;
+    boxesContainer.style.height = '40px'; // Ύψος για μια σειρά κουτιών
+    boxesContainer.style.display = 'flex'; // Χρήση flex για οριζόντια διάταξη
+    boxesContainer.style.justifyContent = 'space-around'; // Ομοιόμορφη κατανομή
+    boxesContainer.style.alignItems = 'center';
+    boxesContainer.style.padding = '0 10px';
+    boxesContainer.style.boxSizing = 'border-box';
+
+    // Προσθήκη των 12 κουτιών
+    for (let i = 0; i < 12; i++) {
+      const box = document.createElement('div');
+      box.className = 'unpacked-box';
+      box.style.opacity = '0';
+      box.style.transition = 'opacity 0.5s ease-in-out';
+      box.style.width = '30px';
+      box.style.height = '30px';
+      box.style.margin = '0 2px';
+
+      // Χρήση της εικόνας boxes.png
+      const boxImage = document.createElement('img');
+      boxImage.src = '/static/img/boxes.png';
+      boxImage.alt = 'Box';
+      boxImage.style.width = '100%';
+      boxImage.style.height = '100%';
+      boxImage.style.objectFit = 'contain';
+
+      box.appendChild(boxImage);
+      boxesContainer.appendChild(box);
+    }
+
+    // Προσθήκη του container στο DOM
+    qcArea.parentNode.appendChild(boxesContainer);
+
+    // Εμφάνιση των κουτιών ένα-ένα
+    const boxes = boxesContainer.querySelectorAll('.unpacked-box');
+    boxes.forEach((box, index) => {
+      setTimeout(() => {
+        box.style.opacity = '1';
+      }, index * 200); // Καθυστέρηση για κάθε κουτί
+    });
+  }
+
   // ======================= Βήμα B: Σάρωση Παλέτας =======================
+  // Δημιουργία λίστας με τα 12 είδη που θα σκαναριστούν
+  const itemsToScan = [
+    { code: 'VID-TB-150', description: 'Βιδωτό Ταμπλό 150cm', expectedQty: 10, scenario: 'success' },
+    { code: 'PCK-RL-90', description: 'Πλακάκι Ρολό 90cm', expectedQty: 5, scenario: 'success' },
+    { code: 'BTL-WN-10', description: 'Μπουκάλι Νερού 10L', expectedQty: 20, scenario: 'success' },
+    { code: 'KNB-DR-35', description: 'Πόμολο Πόρτας 35mm', expectedQty: 15, scenario: 'success' },
+    { code: 'PLT-WD-60', description: 'Παλέτα Ξύλινη 60x80', expectedQty: 8, scenario: 'success' },
+    { code: 'BLT-ST-12', description: 'Μπουλόνι Ατσάλινο 12mm', expectedQty: 50, scenario: 'success' },
+    { code: 'HMR-TL-20', description: 'Σφυρί Εργαλείο 20oz', expectedQty: 12, scenario: 'not_found' },
+    { code: 'SCR-PH-30', description: 'Κατσαβίδι Phillips 30cm', expectedQty: 25, scenario: 'not_found' },
+    { code: 'NUT-HX-08', description: 'Παξιμάδι Εξάγωνο 8mm', expectedQty: 100, scenario: 'qty_mismatch' },
+    { code: 'WRN-AD-15', description: 'Κλειδί Ρυθμιζόμενο 15cm', expectedQty: 10, scenario: 'qty_mismatch' },
+    { code: 'DRL-BT-18', description: 'Τρυπάνι Μπαταρίας 18V', expectedQty: 5, scenario: 'not_in_delivery' },
+    { code: 'SAW-CT-25', description: 'Πριόνι Κοπής 25cm', expectedQty: 8, scenario: 'not_in_delivery' }
+  ];
+
+  // Μεταβλητές για το σκανάρισμα ειδών
+  let currentItemIndex = 0;
+  let scannedItemsCount = 0;
+  // Πίνακας για αποθήκευση των σκαναρισμένων ειδών
+  let scannedItems = [];
+
+  // DOM elements για το σκανάρισμα ειδών
+  const itemScanningStage = document.getElementById('item-scanning-stage');
+  const currentItemToScan = document.getElementById('current-item-to-scan');
+  const currentItemDescription = document.getElementById('current-item-description');
+  const currentItemExpectedQty = document.getElementById('current-item-expected-qty');
+  const scannedItemCode = document.getElementById('scanned-item-code');
+  const scannedItemQty = document.getElementById('scanned-item-qty');
+  const scanItemBtn = document.getElementById('scan-item-btn');
+  const scannedItemsCount_el = document.getElementById('scanned-items-count');
+  const itemsScanProgress = document.getElementById('items-scan-progress');
+  const scannedItemsList = document.getElementById('scanned-items-list');
+  const completeItemsScanBtn = document.getElementById('complete-items-scan-btn');
+
+  // Συνάρτηση για εμφάνιση notification popup
+  function showNotification(message, type) {
+    // Δημιουργία του popup element
+    const popup = document.createElement('div');
+    popup.className = 'notification-popup';
+    popup.textContent = message;
+
+    // Στυλ για το popup ανάλογα με τον τύπο
+    let bgColor = '#4caf50'; // Πράσινο (success)
+
+    if (type === 'error') {
+      bgColor = '#e53935'; // Κόκκινο
+    } else if (type === 'warning') {
+      bgColor = '#ffb300'; // Κίτρινο
+    } else if (type === 'info') {
+      bgColor = '#9c27b0'; // Μωβ
+    }
+
+    // Εφαρμογή στυλ
+    popup.style.position = 'fixed';
+    popup.style.top = '20px';
+    popup.style.right = '20px';
+    popup.style.padding = '12px 20px';
+    popup.style.backgroundColor = bgColor;
+    popup.style.color = '#fff';
+    popup.style.borderRadius = '4px';
+    popup.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+    popup.style.zIndex = '9999';
+    popup.style.minWidth = '250px';
+    popup.style.textAlign = 'center';
+    popup.style.animation = 'fadeIn 0.3s ease-out';
+
+    // Προσθήκη στο DOM
+    document.body.appendChild(popup);
+
+    // Αφαίρεση μετά από 3 δευτερόλεπτα
+    setTimeout(() => {
+      popup.style.animation = 'fadeOut 0.3s ease-in';
+      setTimeout(() => {
+        document.body.removeChild(popup);
+      }, 300);
+    }, 3000);
+  }
+
+  // Συνάρτηση για εμφάνιση του popup με τις πληροφορίες του label
+  function showLabelPopup(labelData) {
+    // Δημιουργία του popup element
+    const popup = document.createElement('div');
+    popup.className = 'notification-popup';
+
+    // Στυλ για το popup
+    popup.style.position = 'fixed';
+    popup.style.top = '50%';
+    popup.style.left = '50%';
+    popup.style.transform = 'translate(-50%, -50%)';
+    popup.style.padding = '20px';
+    popup.style.backgroundColor = '#fff';
+    popup.style.color = '#333';
+    popup.style.borderRadius = '8px';
+    popup.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+    popup.style.zIndex = '9999';
+    popup.style.width = '500px';
+    popup.style.maxWidth = '90%';
+    popup.style.animation = 'fadeIn 0.3s ease-out';
+    popup.style.border = '1px solid #ddd';
+
+    // Περιεχόμενο του popup
+    popup.innerHTML = `
+      <div style="text-align: center; margin-bottom: 15px;">
+        <h3 style="margin: 0; color: #2196f3; font-size: 18px;">Palette Labeling</h3>
+      </div>
+
+      <div style="display: flex; margin-bottom: 15px;">
+        <div style="flex: 1; padding: 10px; border: 1px dashed #ccc; text-align: center; margin-right: 10px;">
+          <div style="font-weight: bold; margin-bottom: 5px;">Barcode</div>
+          <div style="font-family: 'Courier New', monospace; font-size: 14px;">|||||||||||||||||||</div>
+          <div>${labelData.barcode}</div>
+        </div>
+        <div style="flex: 1; padding: 10px; border: 1px dashed #ccc; text-align: center;">
+          <div style="font-weight: bold; margin-bottom: 5px;">QR Code</div>
+          <div style="font-size: 24px;">
+            <i class="fas fa-qrcode"></i>
+          </div>
+          <div>${labelData.barcode}</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <div style="font-weight: bold; margin-bottom: 5px;">Θέση Αποθήκης:</div>
+        <div style="padding: 8px; background-color: #f5f5f5; border-radius: 4px;">${labelData.location}</div>
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <div style="font-weight: bold; margin-bottom: 5px;">Ημερομηνία Εισόδου:</div>
+        <div style="padding: 8px; background-color: #f5f5f5; border-radius: 4px;">${labelData.entryDate}</div>
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <div style="font-weight: bold; margin-bottom: 5px;">SKU:</div>
+        <div style="padding: 8px; background-color: #f5f5f5; border-radius: 4px;">${labelData.sku}</div>
+      </div>
+
+      <div>
+        <div style="font-weight: bold; margin-bottom: 5px;">Περιγραφή:</div>
+        <div style="padding: 8px; background-color: #f5f5f5; border-radius: 4px;">${labelData.description}</div>
+      </div>
+
+      <div style="text-align: right; margin-top: 15px; font-size: 12px; color: #777;">
+        Ποσότητα: ${labelData.quantity} τεμάχια
+      </div>
+    `;
+
+    // Προσθήκη στο DOM
+    document.body.appendChild(popup);
+
+    // Αφαίρεση μετά από 4 δευτερόλεπτα
+    setTimeout(() => {
+      popup.style.animation = 'fadeOut 0.3s ease-in';
+      setTimeout(() => {
+        document.body.removeChild(popup);
+      }, 300);
+    }, 4000);
+  }
+
+  // Συνάρτηση για εμφάνιση του επόμενου είδους προς σάρωση
+  function showNextItemToScan() {
+    if (currentItemIndex < itemsToScan.length) {
+      const item = itemsToScan[currentItemIndex];
+      currentItemToScan.textContent = item.code;
+      currentItemDescription.textContent = item.description;
+      currentItemExpectedQty.textContent = item.expectedQty;
+
+      // Ενημέρωση της κάρτας "Τρέχουσα Εργασία"
+      document.getElementById('current-task-product').textContent = item.code;
+      document.getElementById('current-task-quantity').textContent = item.expectedQty + ' τεμάχια';
+
+      // Καθαρισμός των πεδίων εισαγωγής
+      scannedItemCode.value = '';
+      scannedItemQty.value = '';
+
+      // Εστίαση στο πεδίο κωδικού
+      scannedItemCode.focus();
+    } else {
+      // Όλα τα είδη έχουν σκαναριστεί
+      completeItemsScanBtn.style.display = 'block';
+    }
+  }
+
+  // Συνάρτηση για προσθήκη σκαναρισμένου είδους στη λίστα
+  function addItemToScannedList(item, scannedCode, scannedQty, status) {
+    const itemElement = document.createElement('div');
+    itemElement.style.padding = '8px';
+    itemElement.style.borderBottom = '1px solid #e0e0e0';
+    itemElement.style.display = 'flex';
+    itemElement.style.justifyContent = 'space-between';
+
+    // Χρώμα ανάλογα με το status
+    let statusColor = '#4caf50'; // Πράσινο (success)
+    let statusIcon = 'check-circle';
+
+    if (status === 'error') {
+      statusColor = '#e53935'; // Κόκκινο
+      statusIcon = 'times-circle';
+    } else if (status === 'warning') {
+      statusColor = '#ffb300'; // Κίτρινο
+      statusIcon = 'exclamation-circle';
+    } else if (status === 'info') {
+      statusColor = '#9c27b0'; // Μωβ
+      statusIcon = 'info-circle';
+    }
+
+    itemElement.innerHTML = `
+      <div>
+        <strong>${scannedCode}</strong> - ${item.description}
+      </div>
+      <div style="display: flex; align-items: center;">
+        <span style="margin-right: 8px;">${scannedQty} τεμ.</span>
+        <i class="fas fa-${statusIcon}" style="color: ${statusColor};"></i>
+      </div>
+    `;
+
+    scannedItemsList.appendChild(itemElement);
+
+    // Scroll στο τέλος της λίστας
+    scannedItemsList.scrollTop = scannedItemsList.scrollHeight;
+  }
+
+  // Συνάρτηση για ενημέρωση της προόδου σάρωσης
+  function updateScanProgress() {
+    scannedItemsCount_el.textContent = scannedItemsCount;
+    // Ενημέρωση του μετρητή στην επικεφαλίδα
+    document.getElementById('current-items-count').textContent = scannedItemsCount;
+    const progressPercent = (scannedItemsCount / itemsToScan.length) * 100;
+    itemsScanProgress.style.width = `${progressPercent}%`;
+
+    // Εμφάνιση του κουμπιού ολοκλήρωσης όταν έχουν σκαναριστεί όλα τα είδη
+    if (scannedItemsCount === itemsToScan.length) {
+      completeItemsScanBtn.style.display = 'block';
+    }
+  }
+
+  // Event listener για το κουμπί σάρωσης παλέτας
   scanPalletBtn.addEventListener('click', () => {
     console.log("Step B: Pallet scanned");
-    currentStep = 'C';
+
+    // Εμφάνιση των πληροφοριών παλέτας
+    document.getElementById('pallet-info').style.display = 'block';
+    document.getElementById('palletBarcodeDisplay').textContent = 'PLT-2023-4872';
+    document.getElementById('expectedQtyB').textContent = '35';
+    document.getElementById('expectedQtyAgain').textContent = '35';
+
+    // Εμφάνιση του σταδίου σάρωσης ειδών
+    itemScanningStage.style.display = 'block';
+
+    // Εμφάνιση του πρώτου είδους προς σάρωση
+    showNextItemToScan();
+
+    // Ενημέρωση του progress bar
     markCheckpoint(1);
     updateProgressBar(1);
+  });
+
+  // Event listener για το κουμπί σάρωσης είδους
+  scanItemBtn.addEventListener('click', () => {
+    if (currentItemIndex < itemsToScan.length) {
+      const item = itemsToScan[currentItemIndex];
+      const scannedCode = scannedItemCode.value.trim();
+      const scannedQty = parseInt(scannedItemQty.value) || 0;
+
+      // Έλεγχος σεναρίου
+      if (item.scenario === 'not_found') {
+        // Σενάριο: Δεν βρέθηκε ο κωδικός
+        showNotification(`ΣΦΑΛΜΑ: Δεν βρέθηκε ο κωδικός που σκαναρίστηκε. Παρακαλώ ανοίξτε τον κωδικό με αυτήν την περιγραφή: ${item.description}`, 'error');
+        addItemToScannedList(item, scannedCode, scannedQty, 'error');
+      } else if (item.scenario === 'qty_mismatch') {
+        // Σενάριο: Διαφορά στην ποσότητα
+        showNotification(`Προσοχή βρέθηκε διαφορά στην ποσότητα παραλαβής`, 'warning');
+        addItemToScannedList(item, scannedCode, scannedQty, 'warning');
+      } else if (item.scenario === 'not_in_delivery') {
+        // Σενάριο: Δεν υπάρχει στο Δελτίο Παραλαβής
+        showNotification(`Προσοχή Το είδος δεν υπάρχει στο Δελτίο Παραλαβής Πιθανός Αντικαταστάτης Είδους Να Ελεγχθεί.`, 'info');
+        addItemToScannedList(item, scannedCode, scannedQty, 'info');
+      } else {
+        // Σενάριο: Επιτυχής σάρωση
+        showNotification(`Επιτυχής Συσχέτιση Ποσοτικής Παραλαβής`, 'success');
+        addItemToScannedList(item, scannedCode, scannedQty, 'success');
+      }
+
+      // Αύξηση των μετρητών
+      currentItemIndex++;
+      scannedItemsCount++;
+
+      // Ενημέρωση της προόδου
+      updateScanProgress();
+
+      // Εμφάνιση του επόμενου είδους
+      showNextItemToScan();
+    }
+  });
+
+  // Event listener για το κουμπί ολοκλήρωσης σάρωσης ειδών
+  completeItemsScanBtn.addEventListener('click', () => {
+    console.log("Items scanning completed");
+    currentStep = 'C';
     displayStep('C');
+    // Κρύβουμε το popup μετά την ολοκλήρωση της σάρωσης
+    itemScanningStage.style.display = 'none';
   });
 
   // ======================= Βήμα C: Εκτύπωση Label =======================
@@ -1895,123 +2303,191 @@ function initReceivingProcess() {
     // Εμφάνιση μηνύματος επιβεβαίωσης
     document.getElementById('printFeedbackC').innerText = "Το label εκτυπώθηκε με επιτυχία.";
     document.getElementById('printStatusC').style.display = 'block';
-    currentStep = 'forklift'; // επόμενο 'forklift stage'
+    currentStep = 'truck'; // επόμενο 'truck stage'
     markCheckpoint(2);
     updateProgressBar(2);
-    // Ξεκλειδώνουμε το κουμπί Forklift
+    // Ξεκλειδώνουμε το κουμπί μετακίνησης παλετών
     startForkliftBtn.style.display = 'inline-block';
+
+    // Δημιουργία δεδομένων για το label popup
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('el-GR');
+
+    // Χρησιμοποιούμε το πρώτο σκαναρισμένο είδος ή ένα προκαθορισμένο αν δεν υπάρχουν σκαναρισμένα είδη
+    let labelItem;
+    if (scannedItems.length > 0) {
+      labelItem = scannedItems[0];
+    } else {
+      // Προκαθορισμένα δεδομένα αν δεν υπάρχουν σκαναρισμένα είδη
+      labelItem = {
+        sku: 'VID-TB-150',
+        description: 'Βιδωτό Ταμπλό 150cm',
+        qty: 10
+      };
+    }
+
+    // Δημιουργία μοναδικού barcode για το label
+    const barcode = 'PAL-' + Math.floor(Math.random() * 10000).toString().padStart(4, '0') + '-' + today.getFullYear();
+
+    // Δημιουργία τυχαίας θέσης αποθήκης
+    const warehouseSection = String.fromCharCode(65 + Math.floor(Math.random() * 3)); // A, B, ή C
+    const rackNumber = Math.floor(Math.random() * 20) + 1;
+    const shelfPosition = Math.floor(Math.random() * 30) + 1;
+    const warehouseLocation = `Διάδρομος ${warehouseSection}, Ράφι ${rackNumber}, Θέση ${shelfPosition.toString().padStart(2, '0')}`;
+
+    // Εμφάνιση του popup με τις πληροφορίες του label
+    showLabelPopup({
+      barcode: barcode,
+      location: warehouseLocation,
+      entryDate: formattedDate,
+      sku: labelItem.sku,
+      description: labelItem.description,
+      quantity: labelItem.qty || 10
+    });
   });
 
-  // ===================== Forklift Animation σε Dock→QC→Staging→Racks =====================
+  // ===================== Truck Animation σε Dock→QC→Staging→Racks =====================
   startForkliftBtn.addEventListener('click', () => {
-    console.log("Forklift animation started");
+    console.log("Truck animation started");
     // Εμφάνιση φορτηγάς πάνω από το D3 αρχικά
     forkRoute(dockElements, rackElements);
   });
 
+  // Συνάρτηση για εμφάνιση popup μηνύματος με συγκεκριμένο χρόνο εμφάνισης
+  function showPopupMessage(message, type = 'info', duration = 4000) {
+    // Δημιουργία του popup element
+    const popup = document.createElement('div');
+    popup.className = 'notification-popup';
+    popup.textContent = message;
+
+    // Στυλ για το popup ανάλογα με τον τύπο
+    let bgColor = '#4caf50'; // Πράσινο (success)
+
+    if (type === 'error') {
+      bgColor = '#e53935'; // Κόκκινο
+    } else if (type === 'warning') {
+      bgColor = '#ffb300'; // Κίτρινο
+    } else if (type === 'info') {
+      bgColor = '#2196f3'; // Μπλε
+    }
+
+    // Εφαρμογή στυλ
+    popup.style.position = 'fixed';
+    popup.style.top = '50%';
+    popup.style.left = '50%';
+    popup.style.transform = 'translate(-50%, -50%)';
+    popup.style.padding = '20px 30px';
+    popup.style.backgroundColor = bgColor;
+    popup.style.color = '#fff';
+    popup.style.borderRadius = '8px';
+    popup.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+    popup.style.zIndex = '9999';
+    popup.style.minWidth = '300px';
+    popup.style.textAlign = 'center';
+    popup.style.animation = 'fadeIn 0.3s ease-out';
+    popup.style.fontSize = '18px';
+    popup.style.fontWeight = 'bold';
+
+    // Προσθήκη στο DOM
+    document.body.appendChild(popup);
+
+    // Αφαίρεση μετά από τον καθορισμένο χρόνο
+    setTimeout(() => {
+      popup.style.animation = 'fadeOut 0.3s ease-in';
+      setTimeout(() => {
+        document.body.removeChild(popup);
+      }, 300);
+    }, duration);
+
+    // Επιστρέφουμε μια υπόσχεση που ολοκληρώνεται μετά τον καθορισμένο χρόνο
+    return new Promise(resolve => setTimeout(resolve, duration + 300));
+  }
+
   // ================================================================================
-  // Συνάρτηση forkRoute(): χειρίζεται την κίνηση του forklift πάνω σε:
+  // Συνάρτηση forkRoute(): χειρίζεται την κίνηση των παλετών από το φορτηγό πάνω σε:
   //  1) Dock  (D1→D2→…→D7)
   //  2) QC zone
   //  3) Staging area
   //  4) Racks (R1→R2→…→R20)
   // ================================================================================
   function forkRoute(docks, racks) {
-    // 1) Χάρτης με όλες τις "στάσεις" (DOM elements + zone‐coordinates)
-    const route = [];
+    // Αντί για την κίνηση του φορτηγού, θα αλλάξουμε το χρώμα των κουτιών ραφιών (R1 έως R20)
+    // σύμφωνα με τις νέες προδιαγραφές
 
-    // (α) Σημεία Docks
-    docks.forEach(el => {
-      const rect = el.getBoundingClientRect();
-      const parentRect = el.parentElement.getBoundingClientRect();
-      // Σχετικοί συντεταγμένοι μέσα στο parent container
-      const x = rect.left - parentRect.left + rect.width / 2 - 18; // -18 ώστε να "κεντράρει" το forklift (36px width)
-      const y = rect.top - parentRect.top + rect.height / 2 - 18;
-      route.push({ x, y, idx: docks.length > 1 ? parseInt(el.dataset.dock.replace('D', '')) - 1 : 0 });
-    });
-
-    // (β) Σημείο QC (το κέντρο του .qc-area)
-    const qcArea = document.querySelector('.qc-area');
-    const qcRect = qcArea.getBoundingClientRect();
-    const qcParent = qcArea.parentElement.getBoundingClientRect();
-    const qcX = qcRect.left - qcParent.left + qcRect.width / 2 - 18;
-    const qcY = qcRect.top - qcParent.top + qcRect.height / 2 - 18;
-    route.push({ x: qcX, y: qcY, idx: docks.length }); // idx = 7
-
-    // (γ) Σημείο Staging
-    const stagingArea = document.querySelector('.staging-area');
-    const stRect = stagingArea.getBoundingClientRect();
-    const stParent = stagingArea.parentElement.getBoundingClientRect();
-    const stX = stRect.left - stParent.left + stRect.width / 2 - 18;
-    const stY = stRect.top - stParent.top + stRect.height / 2 - 18;
-    route.push({ x: stX, y: stY, idx: docks.length + 1 }); // idx = 8
-
-    // (δ) Racks (R1→R2→…→R20)
-    racks.forEach(el => {
-      const rect = el.getBoundingClientRect();
-      const parentRect = el.parentElement.getBoundingClientRect();
-      const x = rect.left - parentRect.left + rect.width / 2 - 18;
-      const y = rect.top - parentRect.top + rect.height / 2 - 18;
-      // idx: θα ξεκινάει από 9 (μετά QC=7, Staging=8) … μέχρι 9+19=28
-      const rackIdx = parseInt(el.dataset.rack.replace('R', '')) - 1;
-      route.push({ x, y, idx: docks.length + 1 + rackIdx });
-    });
-
-    // Έτσι:  
-    // ‣ route[0..6] = D1..D7 (idx 0..6)  
-    // ‣ route[7] = QC (idx 7)  
-    // ‣ route[8] = Staging (idx 8)  
-    // ‣ route[9..28] = R1..R20 (idx 9..28)  
-
-    // Τώρα, εκτελούμε το animation βήμα‐βήμα:
-    let step = 0;
-
-    function moveNext() {
-      if (step >= route.length) {
-        // Όλοι οι πομποί ολοκληρώθηκαν → Βήμα D (Ολοκλήρωση)
-        markCheckpoint(3);        // idx=3 → D  
-        updateProgressBar(3);     // 100%  
-        displayStep('D');
-        fillFinalReceiptTable();
-        return;
+    // Συνάρτηση για να αλλάξει το χρώμα όλων των ραφιών
+    async function processRacks() {
+      // 1. Αρχικά κάνουμε όλα τα ράφια γκρι
+      for (const rack of racks) {
+        rack.style.backgroundColor = '#9e9e9e'; // Γκρι χρώμα
       }
-      const target = route[step];
-      forklift.style.left = target.x + 'px';
-      forklift.style.top = target.y + 'px';
 
-      // Μετά από 1s (CSS transition), μαρκάρουμε checkpoint αν idx<4
-      setTimeout(() => {
-        if (target.idx < 4) {
-          // μόνον αν idx ≤ 3 (Docks idx 0..6, QC idx 7, but εμείς ενδιαφερόμαστε 
-          // για τα τέσσερα κυρίαρχα βήματα A→B→C→D, τα οποία ήδη μαρκαρίσαμε 
-          // στα προηγούμενα στάδια). Στην πράξη, έχουμε κάνει ήδη markCheckpoint(2) 
-          // στο "Εκτύπωση Label", οπότε εδώ κάνουμε μόνο mark 3 (Ολοκλήρωση).
-        }
-        step++;
-        // Προχωράμε στο επόμενο σημείο μετά από 800ms
-        setTimeout(moveNext, 800);
-      }, 1000);
+      // 2. Εμφανίζουμε το πρώτο popup
+      await showPopupMessage('ΕΛΕΓΧΟΣ ΚΥΚΛΟΦΟΡΙΑΚΗΣ ΤΑΧΥΤΗΤΑΣ', 'info');
+
+      // 3. Κάνουμε όλα τα ράφια κόκκινα
+      for (const rack of racks) {
+        rack.style.backgroundColor = '#e53935'; // Κόκκινο χρώμα
+      }
+
+      // 4. Εμφανίζουμε το δεύτερο popup
+      await showPopupMessage('ΟΛΟΙ ΟΙ ΔΙΑΔΡΟΜΟΙ ΕΙΝΑΙ ΚΑΤΕΙΛΗΜΜΈΝΟΙ', 'error');
+
+      // 5. Επιλέγουμε ένα τυχαίο ράφι και το κάνουμε πράσινο
+      const randomIndex = Math.floor(Math.random() * racks.length);
+      const randomRack = racks[randomIndex];
+      randomRack.style.backgroundColor = '#4caf50'; // Πράσινο χρώμα
+
+      // 6. Εμφανίζουμε το τρίτο popup
+      await showPopupMessage('ΔΙΑΔΡΟΜΗ ΕΛΕΥΘΕΡΗ ΠΡΟΧΩΡΗΣΤΕ ΣΕ ΔΙΑΚΙΝΗΣΗ', 'success');
+
+      // 7. Ολοκληρώνουμε τη διαδικασία
+      markCheckpoint(3);        // idx=3 → D  
+      updateProgressBar(3);     // 100%  
+      displayStep('D');
+      fillFinalReceiptTable();
     }
 
-    // Εκκίνηση animation
-    moveNext();
+    // Ξεκινάμε τη διαδικασία
+    processRacks();
   }
 
   // ================================ Step D Helper ================================
   function fillFinalReceiptTable() {
-    const demoItems = [
-      { sku: 'VID-TB-150', qty: 10 },
-      { sku: 'PCK-RL-90', qty: 5 },
-      { sku: 'BTL-WN-10', qty: 20 }
-    ];
     finalReceiptTableBody.innerHTML = '';
-    demoItems.forEach(item => {
+
+    // Χρησιμοποιούμε τα σκαναρισμένα είδη αντί για τα demo items
+    scannedItems.forEach(item => {
       const tr = document.createElement('tr');
+
+      // Προσθήκη χρώματος ανάλογα με το σενάριο
+      if (item.scenario === 'not_found') {
+        // Κόκκινο για είδη που δεν βρέθηκαν
+        tr.style.backgroundColor = 'rgba(229, 57, 53, 0.2)'; // Ελαφρύ κόκκινο
+        tr.title = 'Δεν βρέθηκε ο κωδικός';
+      } else if (item.scenario === 'qty_mismatch') {
+        // Κίτρινο για διαφορά στην ποσότητα
+        tr.style.backgroundColor = 'rgba(255, 179, 0, 0.2)'; // Ελαφρύ κίτρινο
+        tr.title = 'Διαφορά στην ποσότητα παραλαβής';
+      } else if (item.scenario === 'not_in_delivery') {
+        // Μωβ για είδη που δεν υπάρχουν στο δελτίο
+        tr.style.backgroundColor = 'rgba(156, 39, 176, 0.2)'; // Ελαφρύ μωβ
+        tr.title = 'Το είδος δεν υπάρχει στο Δελτίο Παραλαβής';
+      }
+
+      // Προσθήκη κελιών για SKU και ποσότητα
       const tdSku = document.createElement('td');
       tdSku.innerText = item.sku;
-      const tdQty = document.createElement('td');
-      tdQty.innerText = item.qty;
       tr.appendChild(tdSku);
+
+      const tdQty = document.createElement('td');
+
+      // Για τα είδη με διαφορά στην ποσότητα, εμφανίζουμε και την αναμενόμενη ποσότητα
+      if (item.scenario === 'qty_mismatch') {
+        tdQty.innerHTML = `<span style="text-decoration: line-through; color: #999;">${item.expectedQty}</span> ${item.qty}`;
+      } else {
+        tdQty.innerText = item.qty;
+      }
+
       tr.appendChild(tdQty);
       finalReceiptTableBody.appendChild(tr);
     });
@@ -2023,6 +2499,15 @@ function initReceivingProcess() {
   // Αρχικά κρύψε τα κουμπιά που θα εμφανιστούν αργότερα:
   document.getElementById('printStatusC').style.display = 'none';
   startForkliftBtn.style.display = 'none';
+
+  // Συνάρτηση για ανακάτεμα πίνακα (Fisher-Yates shuffle algorithm)
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 
   // ================================= startReceivingProcess =================================
   // Συνάρτηση που ξεκινάει το demo της Διαδικασίας Παραλαβής
@@ -2037,6 +2522,9 @@ function initReceivingProcess() {
     displayStep('A');
     currentStep = 'A';
 
+    // Ανακάτεμα των ειδών για τυχαία σειρά εμφάνισης
+    shuffleArray(itemsToScan);
+
     // Προσομοίωση του κλικ στο κουμπί "Φόρτωση στο RF Gun"
     setTimeout(() => {
       console.log("Step A: Document scanned");
@@ -2045,31 +2533,157 @@ function initReceivingProcess() {
       updateProgressBar(0);
       displayStep('B');
 
+      // Animate palette movement from truck to QCA
+      animatePaletteMovement();
+
       // Προσομοίωση του κλικ στο κουμπί "Σάρωση Παλέτας"
       setTimeout(() => {
         console.log("Step B: Pallet scanned");
-        currentStep = 'C';
+
+        // Εμφάνιση των πληροφοριών παλέτας
+        document.getElementById('pallet-info').style.display = 'block';
+        document.getElementById('palletBarcodeDisplay').textContent = 'PLT-2023-4872';
+        document.getElementById('expectedQtyB').textContent = '35';
+        document.getElementById('expectedQtyAgain').textContent = '35';
+
+        // Εμφάνιση του σταδίου σάρωσης ειδών
+        itemScanningStage.style.display = 'block';
+
+        // Εμφάνιση του πρώτου είδους προς σάρωση
+        showNextItemToScan();
+
+        // Ενημέρωση του progress bar
         markCheckpoint(1);
         updateProgressBar(1);
-        displayStep('C');
 
-        // Προσομοίωση του κλικ στο κουμπί "Εκτύπωση Label"
-        setTimeout(() => {
-          console.log("Step C: Label printed");
-          document.getElementById('printFeedbackC').innerText = "Το label εκτυπώθηκε με επιτυχία.";
-          document.getElementById('printStatusC').style.display = 'block';
-          currentStep = 'forklift';
-          markCheckpoint(2);
-          updateProgressBar(2);
+        // Αυτόματη σάρωση των 12 ειδών
+        let itemIndex = 0;
 
-          // Προσομοίωση του κλικ στο κουμπί "Μετακίνηση Παλετών"
-          setTimeout(() => {
-            console.log("Forklift animation started");
-            forkRoute(dockElements, rackElements);
-          }, 800);
-        }, 800);
-      }, 800);
-    }, 400);
+        function scanNextItem() {
+          if (itemIndex < itemsToScan.length) {
+            const item = itemsToScan[itemIndex];
+
+            // Προσομοίωση διαφορετικής ποσότητας για τα σενάρια qty_mismatch
+            let scannedQty = item.expectedQty;
+            if (item.scenario === 'qty_mismatch') {
+              // Για τα σενάρια qty_mismatch, χρησιμοποιούμε διαφορετική ποσότητα
+              scannedQty = item.expectedQty + (Math.random() > 0.5 ? 2 : -2);
+            }
+
+            // Αποθήκευση του σκαναρισμένου είδους
+            scannedItems.push({
+              sku: item.code,
+              qty: scannedQty,
+              scenario: item.scenario,
+              expectedQty: item.expectedQty
+            });
+
+            // Έλεγχος σεναρίου
+            if (item.scenario === 'not_found') {
+              // Σενάριο: Δεν βρέθηκε ο κωδικός
+              showNotification(`ΣΦΑΛΜΑ: Δεν βρέθηκε ο κωδικός που σκαναρίστηκε. Παρακαλώ ανοίξτε τον κωδικό με αυτήν την περιγραφή: ${item.description}`, 'error');
+              addItemToScannedList(item, item.code, scannedQty, 'error');
+            } else if (item.scenario === 'qty_mismatch') {
+              // Σενάριο: Διαφορά στην ποσότητα
+              showNotification(`Προσοχή βρέθηκε διαφορά στην ποσότητα παραλαβής`, 'warning');
+              addItemToScannedList(item, item.code, scannedQty, 'warning');
+            } else if (item.scenario === 'not_in_delivery') {
+              // Σενάριο: Δεν υπάρχει στο Δελτίο Παραλαβής
+              showNotification(`Προσοχή Το είδος δεν υπάρχει στο Δελτίο Παραλαβής Πιθανός Αντικαταστάτης Είδους Να Ελεγχθεί.`, 'info');
+              addItemToScannedList(item, item.code, scannedQty, 'info');
+            } else {
+              // Σενάριο: Επιτυχής σάρωση
+              showNotification(`Επιτυχής Συσχέτιση Ποσοτικής Παραλαβής`, 'success');
+              addItemToScannedList(item, item.code, scannedQty, 'success');
+            }
+
+            // Αύξηση των μετρητών
+            currentItemIndex++;
+            scannedItemsCount++;
+
+            // Ενημέρωση της προόδου
+            updateScanProgress();
+
+            // Εμφάνιση του επόμενου είδους
+            showNextItemToScan();
+
+            // Προσομοίωση εισαγωγής κωδικού και ποσότητας
+            scannedItemCode.value = item.code;
+            scannedItemQty.value = item.scenario === 'qty_mismatch' ? scannedQty : item.expectedQty;
+
+            // Προχωράμε στο επόμενο είδος
+            itemIndex++;
+
+            // Καθυστέρηση πριν το επόμενο είδος
+            setTimeout(scanNextItem, 4000);
+          } else {
+            // Όλα τα είδη έχουν σκαναριστεί, προχωράμε στο επόμενο βήμα
+            setTimeout(() => {
+              console.log("Items scanning completed");
+              // Κρύβουμε το popup μετά την ολοκλήρωση της σάρωσης
+              itemScanningStage.style.display = 'none';
+              currentStep = 'C';
+              displayStep('C');
+
+              // Προσομοίωση του κλικ στο κουμπί "Εκτύπωση Label"
+              setTimeout(() => {
+                console.log("Step C: Label printed");
+                document.getElementById('printFeedbackC').innerText = "Το label εκτυπώθηκε με επιτυχία.";
+                document.getElementById('printStatusC').style.display = 'block';
+                currentStep = 'truck';
+                markCheckpoint(2);
+                updateProgressBar(2);
+
+                // Δημιουργία δεδομένων για το label popup
+                const today = new Date();
+                const formattedDate = today.toLocaleDateString('el-GR');
+
+                // Χρησιμοποιούμε το πρώτο σκαναρισμένο είδος ή ένα προκαθορισμένο αν δεν υπάρχουν σκαναρισμένα είδη
+                let labelItem;
+                if (scannedItems.length > 0) {
+                  labelItem = scannedItems[0];
+                } else {
+                  // Προκαθορισμένα δεδομένα αν δεν υπάρχουν σκαναρισμένα είδη
+                  labelItem = {
+                    sku: 'VID-TB-150',
+                    description: 'Βιδωτό Ταμπλό 150cm',
+                    qty: 10
+                  };
+                }
+
+                // Δημιουργία μοναδικού barcode για το label
+                const barcode = 'PAL-' + Math.floor(Math.random() * 10000).toString().padStart(4, '0') + '-' + today.getFullYear();
+
+                // Δημιουργία τυχαίας θέσης αποθήκης
+                const warehouseSection = String.fromCharCode(65 + Math.floor(Math.random() * 3)); // A, B, ή C
+                const rackNumber = Math.floor(Math.random() * 20) + 1;
+                const shelfPosition = Math.floor(Math.random() * 30) + 1;
+                const warehouseLocation = `Διάδρομος ${warehouseSection}, Ράφι ${rackNumber}, Θέση ${shelfPosition.toString().padStart(2, '0')}`;
+
+                // Εμφάνιση του popup με τις πληροφορίες του label
+                showLabelPopup({
+                  barcode: barcode,
+                  location: warehouseLocation,
+                  entryDate: formattedDate,
+                  sku: labelItem.sku,
+                  description: labelItem.description,
+                  quantity: labelItem.qty || 10
+                });
+
+                // Προσομοίωση του κλικ στο κουμπί "Μετακίνηση Παλετών"
+                setTimeout(() => {
+                  console.log("Truck animation started");
+                  forkRoute(dockElements, rackElements);
+                }, 4000);
+              }, 4000);
+            }, 4000);
+          }
+        }
+
+        // Ξεκινάμε τη σάρωση των ειδών
+        setTimeout(scanNextItem, 4000);
+      }, 4000);
+    }, 4000);
   }
 
   // Κάνουμε τη συνάρτηση διαθέσιμη παγκοσμίως
@@ -2077,10 +2691,10 @@ function initReceivingProcess() {
 }
 
 // --------------------------------------------------------------------------------
-// Αυτόματη κλήση initReceivingProcess() αν φορτωθεί σελίδα με #receiving-map
+// Αυτόματη κλήση initReceivingProcess() αν φορτωθεί σελίδα με #receiving-progress
 // --------------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
-  if (document.getElementById('receiving-map')) {
+  if (document.getElementById('receiving-progress')) {
     initReceivingProcess();
   }
 });
