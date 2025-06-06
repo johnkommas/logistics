@@ -1911,13 +1911,13 @@ function initReceivingProcess() {
     const mapRect = mapCenter.getBoundingClientRect();
     const qcRect = qcArea.getBoundingClientRect();
 
-    // Αρχική θέση (δίπλα στο D3, μετακινημένη περισσότερο προς τα δεξιά)
-    const startX = truckRect.left - mapRect.left + truckRect.width + 50; // Μετακίνηση περισσότερο προς τα δεξιά
-    const startY = truckRect.top - mapRect.top + (truckRect.height / 2);
+    // Αρχική θέση (δίπλα στο D3, μετακινημένη πολύ περισσότερο προς τα δεξιά)
+    const startX = truckRect.left - mapRect.left + truckRect.width + 370; // Μετακίνηση πολύ περισσότερο προς τα δεξιά
+    const startY = truckRect.top - mapRect.top + (truckRect.height / 2) + 80;
 
     // Τελική θέση (μέση της Ζώνης Ελέγχου με το ίδιο x)
     const endX = startX; // Διατηρούμε το ίδιο x για οριζόντια κίνηση
-    const endY = qcRect.top - mapRect.top + (qcRect.height / 2) - 30;
+    const endY = qcRect.top - mapRect.top + (qcRect.height / 2) +30;
 
     // Τοποθέτηση της παλέτας στην αρχική θέση
     paletteElement.style.left = `${startX}px`;
@@ -1936,30 +1936,48 @@ function initReceivingProcess() {
         // Αφαιρούμε την παλέτα
         mapCenter.removeChild(paletteElement);
 
-        // Ξεπακετάρουμε τα αγαθά σε 12 κουτιά
-        unpackGoodsToBoxes(qcArea, qcRect, mapRect);
+        // Ξεπακετάρουμε τα αγαθά σε 8 κουτιά (4 αριστερά και 4 δεξιά)
+        unpackGoodsToBoxes(qcArea, qcRect, mapRect, endX, endY);
       }, 2000); // Ο χρόνος πρέπει να είναι ίσος με το χρόνο του transition
     }, 500);
   }
 
-  // Συνάρτηση για το ξεπακετάρισμα των αγαθών σε 12 κουτιά
-  function unpackGoodsToBoxes(qcArea, qcRect, mapRect) {
+  // Συνάρτηση για το ξεπακετάρισμα των αγαθών σε 8 κουτιά (4 αριστερά και 4 δεξιά)
+  function unpackGoodsToBoxes(qcArea, qcRect, mapRect, endX, endY) {
     // Δημιουργία container για τα κουτιά
     const boxesContainer = document.createElement('div');
     boxesContainer.className = 'unpacked-boxes';
+    boxesContainer.id = 'unpacked-boxes-container'; // Προσθήκη μοναδικού ID
     boxesContainer.style.position = 'absolute';
-    boxesContainer.style.left = `${qcRect.left - mapRect.left}px`;
-    boxesContainer.style.top = `${qcRect.top - mapRect.top + qcRect.height/2 - 20}px`; // Τοποθέτηση στη μέση του QCA
-    boxesContainer.style.width = `${qcRect.width}px`;
+    // Χρησιμοποιούμε τις συντεταγμένες endX και endY που λάβαμε από την animatePaletteMovement
+    boxesContainer.style.left = `${endX - 150}px`; // Μετατόπιση αριστερά για να κεντράρουμε τα κουτιά
+    boxesContainer.style.top = `${endY}px`; // Τοποθέτηση στο endY
+    boxesContainer.style.width = '300px'; // Σταθερό πλάτος για τα κουτιά
     boxesContainer.style.height = '40px'; // Ύψος για μια σειρά κουτιών
     boxesContainer.style.display = 'flex'; // Χρήση flex για οριζόντια διάταξη
-    boxesContainer.style.justifyContent = 'space-around'; // Ομοιόμορφη κατανομή
+    boxesContainer.style.justifyContent = 'space-between'; // Διαχωρισμός σε αριστερά και δεξιά
     boxesContainer.style.alignItems = 'center';
-    boxesContainer.style.padding = '0 10px';
+    boxesContainer.style.padding = '0';
     boxesContainer.style.boxSizing = 'border-box';
 
-    // Προσθήκη των 12 κουτιών
-    for (let i = 0; i < 12; i++) {
+    // Δημιουργία container για τα αριστερά κουτιά
+    const leftBoxesContainer = document.createElement('div');
+    leftBoxesContainer.style.display = 'flex';
+    leftBoxesContainer.style.justifyContent = 'flex-start';
+    leftBoxesContainer.style.gap = '10px';
+
+    // Δημιουργία container για τα δεξιά κουτιά
+    const rightBoxesContainer = document.createElement('div');
+    rightBoxesContainer.style.display = 'flex';
+    rightBoxesContainer.style.justifyContent = 'flex-end';
+    rightBoxesContainer.style.gap = '10px';
+
+    // Προσθήκη των containers στο κύριο container
+    boxesContainer.appendChild(leftBoxesContainer);
+    boxesContainer.appendChild(rightBoxesContainer);
+
+    // Συνάρτηση για δημιουργία κουτιού
+    function createBox() {
       const box = document.createElement('div');
       box.className = 'unpacked-box';
       box.style.opacity = '0';
@@ -1977,7 +1995,17 @@ function initReceivingProcess() {
       boxImage.style.objectFit = 'contain';
 
       box.appendChild(boxImage);
-      boxesContainer.appendChild(box);
+      return box;
+    }
+
+    // Προσθήκη 4 κουτιών στα αριστερά
+    for (let i = 0; i < 4; i++) {
+      leftBoxesContainer.appendChild(createBox());
+    }
+
+    // Προσθήκη 4 κουτιών στα δεξιά
+    for (let i = 0; i < 4; i++) {
+      rightBoxesContainer.appendChild(createBox());
     }
 
     // Προσθήκη του container στο DOM
@@ -2148,8 +2176,119 @@ function initReceivingProcess() {
       popup.style.animation = 'fadeOut 0.3s ease-in';
       setTimeout(() => {
         document.body.removeChild(popup);
+
+        // Βεβαιωνόμαστε ότι τα κουτιά έχουν αφαιρεθεί πριν δημιουργήσουμε τις παλέτες
+        console.log("Removing boxes before creating palettes");
+
+        // Αφαίρεση των κουτιών με ID
+        const boxesContainerById = document.getElementById('unpacked-boxes-container');
+        if (boxesContainerById) {
+          console.log("Removing boxes container by ID");
+          boxesContainerById.parentNode.removeChild(boxesContainerById);
+        }
+
+        // Αφαίρεση των κουτιών με κλάση
+        const boxesContainerByClass = document.querySelector('.unpacked-boxes');
+        if (boxesContainerByClass) {
+          console.log("Removing boxes container by class");
+          boxesContainerByClass.parentNode.removeChild(boxesContainerByClass);
+        }
+
+        // Αφαίρεση των κουτιών και δημιουργία 3 παλετών
+        createAndMovePalettes();
       }, 300);
     }, 4000);
+  }
+
+  // Συνάρτηση για αφαίρεση των κουτιών και δημιουργία 3 παλετών
+  function createAndMovePalettes() {
+    console.log("Creating and moving palettes");
+
+    // Αφαίρεση των κουτιών
+    // Πρώτα προσπαθούμε να βρούμε το container με το ID
+    let boxesContainer = document.getElementById('unpacked-boxes-container');
+    console.log("Boxes container found by ID:", boxesContainer);
+
+    // Αν δεν βρεθεί με το ID, προσπαθούμε με την κλάση
+    if (!boxesContainer) {
+      boxesContainer = document.querySelector('.unpacked-boxes');
+      console.log("Boxes container found by class:", boxesContainer);
+    }
+
+    // Αφαίρεση του container αν βρέθηκε
+    if (boxesContainer) {
+      boxesContainer.parentNode.removeChild(boxesContainer);
+      console.log("Boxes container removed");
+    } else {
+      console.log("Boxes container not found");
+
+      // Αναζήτηση όλων των στοιχείων που μπορεί να είναι κουτιά
+      const allBoxes = document.querySelectorAll('div');
+      console.log("Searching for boxes among all divs...");
+
+      allBoxes.forEach(div => {
+        if (div.className.includes('box') || div.id.includes('box')) {
+          console.log("Found potential box:", div);
+        }
+      });
+    }
+
+    // Βρίσκουμε τα απαραίτητα στοιχεία
+    const mapCenter = document.querySelector('.map-center');
+    const qcArea = document.querySelector('.qc-area');
+    const truckElement = document.querySelector('.dock[data-dock="D3"] .fa-truck');
+
+    if (!mapCenter || !qcArea || !truckElement) {
+      console.error("Required elements not found for palette creation");
+      return;
+    }
+
+    // Υπολογισμός των θέσεων
+    const mapRect = mapCenter.getBoundingClientRect();
+    const qcRect = qcArea.getBoundingClientRect();
+    const truckRect = truckElement.getBoundingClientRect();
+
+    // Συντεταγμένες για τις παλέτες (από το issue description)
+    const centerX = truckRect.left - mapRect.left + truckRect.width + 370;
+    const centerY = qcRect.top - mapRect.top + (qcRect.height / 2) + 30;
+
+    // Δημιουργία των 3 παλετών
+    createPalette(mapCenter, centerX - 100, centerY, 'left-palette'); // Αριστερή παλέτα
+    createPalette(mapCenter, centerX, centerY, 'center-palette'); // Κεντρική παλέτα
+    createPalette(mapCenter, centerX + 100, centerY, 'right-palette'); // Δεξιά παλέτα
+
+    // Μετά από 2 δευτερόλεπτα, μετακινούμε τις παλέτες προς τα κάτω
+    setTimeout(() => {
+      movePalettesDown(centerY + 50);
+    }, 2000);
+  }
+
+  // Συνάρτηση για δημιουργία παλέτας
+  function createPalette(mapCenter, x, y, className) {
+    // Δημιουργία του στοιχείου της παλέτας
+    const paletteElement = document.createElement('div');
+    paletteElement.className = `moving-palette ${className}`;
+    paletteElement.style.position = 'absolute';
+    paletteElement.style.zIndex = '100';
+    paletteElement.style.transition = 'all 2s ease-in-out';
+    paletteElement.style.left = `${x}px`;
+    paletteElement.style.top = `${y}px`;
+
+    // Προσθήκη της εικόνας της παλέτας
+    paletteElement.innerHTML = `
+      <img src="/static/img/pallete.png" alt="Palette" style="width: 60px; height: auto;">
+    `;
+
+    // Προσθήκη της παλέτας στο DOM
+    mapCenter.appendChild(paletteElement);
+  }
+
+  // Συνάρτηση για μετακίνηση των παλετών προς τα κάτω
+  function movePalettesDown(newY) {
+    const palettes = document.querySelectorAll('.moving-palette');
+    palettes.forEach(palette => {
+      palette.style.top = `${newY}px`;
+    });
   }
 
   // Συνάρτηση για εμφάνιση του επόμενου είδους προς σάρωση
@@ -2432,10 +2571,38 @@ function initReceivingProcess() {
       // 4. Εμφανίζουμε το δεύτερο popup
       await showPopupMessage('ΟΛΟΙ ΟΙ ΔΙΑΔΡΟΜΟΙ ΕΙΝΑΙ ΚΑΤΕΙΛΗΜΜΈΝΟΙ', 'error');
 
-      // 5. Επιλέγουμε ένα τυχαίο ράφι και το κάνουμε πράσινο
-      const randomIndex = Math.floor(Math.random() * racks.length);
-      const randomRack = racks[randomIndex];
-      randomRack.style.backgroundColor = '#4caf50'; // Πράσινο χρώμα
+      // 5. Επιλέγουμε 3 τυχαία ράφια (ένα για κάθε παλέτα) και τα κάνουμε πράσινα
+      // Δημιουργούμε ένα αντίγραφο του πίνακα racks και το ανακατεύουμε
+      const shuffledRacks = [...racks];
+      shuffleArray(shuffledRacks);
+
+      // Επιλέγουμε τα πρώτα 3 ράφια και τα κάνουμε πράσινα
+      // Επίσης, για κάθε επιλεγμένο ράφι, βρίσκουμε όλα τα ράφια με το ίδιο τελευταίο ψηφίο
+      // και τα κάνουμε γκρι
+      for (let i = 0; i < 3; i++) {
+        if (i < shuffledRacks.length) {
+          const selectedRack = shuffledRacks[i];
+          selectedRack.style.backgroundColor = '#4caf50'; // Πράσινο χρώμα
+
+          // Παίρνουμε το data-rack attribute (π.χ. "R34")
+          const rackId = selectedRack.getAttribute('data-rack');
+
+          // Παίρνουμε το τελευταίο ψηφίο (π.χ. "4" από "R34")
+          const lastDigit = rackId.charAt(rackId.length - 1);
+
+          // Βρίσκουμε όλα τα ράφια που έχουν το ίδιο τελευταίο ψηφίο
+          // και τα κάνουμε γκρι, εκτός από το επιλεγμένο ράφι
+          for (const rack of racks) {
+            const currentRackId = rack.getAttribute('data-rack');
+            const currentLastDigit = currentRackId.charAt(currentRackId.length - 1);
+
+            // Αν το τελευταίο ψηφίο είναι το ίδιο και δεν είναι το επιλεγμένο ράφι
+            if (currentLastDigit === lastDigit && currentRackId !== rackId) {
+              rack.style.backgroundColor = '#9e9e9e'; // Γκρι χρώμα
+            }
+          }
+        }
+      }
 
       // 6. Εμφανίζουμε το τρίτο popup
       await showPopupMessage('ΔΙΑΔΡΟΜΗ ΕΛΕΥΘΕΡΗ ΠΡΟΧΩΡΗΣΤΕ ΣΕ ΔΙΑΚΙΝΗΣΗ', 'success');

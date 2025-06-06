@@ -53,7 +53,7 @@
                 {% elif procedure_id == 'shipping' %}
                     Διαδικασία Αποστολής & Παράδοσης
                 {% elif procedure_id == 'returns' %}
-                    Διαδικασία Διαχείρισης Επιστροφών
+                    Διαδικασία Επιστροφής Αγορών
                 {% elif procedure_id == 'invoicing' %}
                     Διαδικασία Τιμολόγησης
                 {% elif procedure_id == 'receiving' %}
@@ -772,7 +772,7 @@
         Ζώνη Αναμονής Παλετών (Staging Area)
       </div>
 
-      <!-- 4) Racks Grid (Δύο σειρές από R1…R10 και R11…R20) -->
+      <!-- 4) Racks Grid (Επτά σειρές από R1…R70) -->
       <div class="racks-grid" style="
             display: grid;
             grid-template-columns: repeat(10, 1fr);
@@ -809,6 +809,61 @@
         <div class="rack" data-rack="R18" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R18</div>
         <div class="rack" data-rack="R19" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R19</div>
         <div class="rack" data-rack="R20" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R20</div>
+        <!-- Τρίτη σειρά R21…R30 -->
+        <div class="rack" data-rack="R21" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R21</div>
+        <div class="rack" data-rack="R22" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R22</div>
+        <div class="rack" data-rack="R23" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R23</div>
+        <div class="rack" data-rack="R24" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R24</div>
+        <div class="rack" data-rack="R25" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R25</div>
+        <div class="rack" data-rack="R26" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R26</div>
+        <div class="rack" data-rack="R27" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R27</div>
+        <div class="rack" data-rack="R28" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R28</div>
+        <div class="rack" data-rack="R29" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R29</div>
+        <div class="rack" data-rack="R30" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R30</div>
+        <!-- Τέταρτη σειρά R31…R40 -->
+        <div class="rack" data-rack="R31" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R31</div>
+        <div class="rack" data-rack="R32" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R32</div>
+        <div class="rack" data-rack="R33" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R33</div>
+        <div class="rack" data-rack="R34" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R34</div>
+        <div class="rack" data-rack="R35" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R35</div>
+        <div class="rack" data-rack="R36" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R36</div>
+        <div class="rack" data-rack="R37" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R37</div>
+        <div class="rack" data-rack="R38" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R38</div>
+        <div class="rack" data-rack="R39" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R39</div>
+        <div class="rack" data-rack="R40" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R40</div>
+        <!-- Πέμπτη σειρά R41…R50 -->
+        <div class="rack" data-rack="R41" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R41</div>
+        <div class="rack" data-rack="R42" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R42</div>
+        <div class="rack" data-rack="R43" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R43</div>
+        <div class="rack" data-rack="R44" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R44</div>
+        <div class="rack" data-rack="R45" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R45</div>
+        <div class="rack" data-rack="R46" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R46</div>
+        <div class="rack" data-rack="R47" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R47</div>
+        <div class="rack" data-rack="R48" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R48</div>
+        <div class="rack" data-rack="R49" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R49</div>
+        <div class="rack" data-rack="R50" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R50</div>
+        <!-- Έκτη σειρά R51…R60 -->
+        <div class="rack" data-rack="R51" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R51</div>
+        <div class="rack" data-rack="R52" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R52</div>
+        <div class="rack" data-rack="R53" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R53</div>
+        <div class="rack" data-rack="R54" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R54</div>
+        <div class="rack" data-rack="R55" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R55</div>
+        <div class="rack" data-rack="R56" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R56</div>
+        <div class="rack" data-rack="R57" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R57</div>
+        <div class="rack" data-rack="R58" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R58</div>
+        <div class="rack" data-rack="R59" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R59</div>
+        <div class="rack" data-rack="R60" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R60</div>
+        <!-- Έβδομη σειρά R61…R70 -->
+        <div class="rack" data-rack="R61" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R61</div>
+        <div class="rack" data-rack="R62" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R62</div>
+        <div class="rack" data-rack="R63" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R63</div>
+        <div class="rack" data-rack="R64" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R64</div>
+        <div class="rack" data-rack="R65" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R65</div>
+        <div class="rack" data-rack="R66" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R66</div>
+        <div class="rack" data-rack="R67" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R67</div>
+        <div class="rack" data-rack="R68" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R68</div>
+        <div class="rack" data-rack="R69" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R69</div>
+        <div class="rack" data-rack="R70" style="background: #90caf9; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold;">R70</div>
       </div>
 
     </div>
