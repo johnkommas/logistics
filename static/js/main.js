@@ -16,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('receiving-progress')) {
         initReceivingProcess();
     }
+
+    // Initialize return process if on returns page
+    if (document.getElementById('return-map')) {
+        initReturnProcess();
+    }
 });
 
 // Counter animation for KPI values
@@ -2882,3 +2887,200 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// Initialize Return Process
+function initReturnProcess() {
+    // Get DOM elements
+    const truck = document.getElementById('truck');
+    const returnProgress = document.getElementById('return-progress');
+    const progressPercentage = document.querySelector('.progress-percentage');
+    const checkpoints = document.querySelectorAll('.progress-checkpoint');
+    
+    // Get all steps
+    const stepA = document.getElementById('stepA');
+    const stepB = document.getElementById('stepB');
+    const stepC = document.getElementById('stepC');
+    const stepD = document.getElementById('stepD');
+    const stepE = document.getElementById('stepE');
+    const stepF = document.getElementById('stepF');
+    const stepG = document.getElementById('stepG');
+    const stepH = document.getElementById('stepH');
+    const stepI = document.getElementById('stepI');
+    
+    // Initially show only step A
+    displayReturnStep('A');
+    
+    // Helper function to display the correct step
+    function displayReturnStep(step) {
+        // Hide all steps
+        stepA.style.display = 'none';
+        stepB.style.display = 'none';
+        stepC.style.display = 'none';
+        stepD.style.display = 'none';
+        stepE.style.display = 'none';
+        stepF.style.display = 'none';
+        stepG.style.display = 'none';
+        stepH.style.display = 'none';
+        stepI.style.display = 'none';
+        
+        // Show the requested step
+        switch(step) {
+            case 'A':
+                stepA.style.display = 'block';
+                break;
+            case 'B':
+                stepB.style.display = 'block';
+                break;
+            case 'C':
+                stepC.style.display = 'block';
+                break;
+            case 'D':
+                stepD.style.display = 'block';
+                break;
+            case 'E':
+                stepE.style.display = 'block';
+                break;
+            case 'F':
+                stepF.style.display = 'block';
+                break;
+            case 'G':
+                stepG.style.display = 'block';
+                break;
+            case 'H':
+                stepH.style.display = 'block';
+                break;
+            case 'I':
+                stepI.style.display = 'block';
+                break;
+        }
+    }
+    
+    // Helper function to update progress bar
+    function updateReturnProgress(idx) {
+        const progressPercentage = Math.round(idx * 100 / 9);
+        returnProgress.style.width = `${progressPercentage}%`;
+        document.querySelector('.progress-percentage').textContent = `${progressPercentage}% ολοκληρωμένο`;
+    }
+    
+    // Helper function to mark checkpoint as completed
+    function markReturnCheckpoint(idx) {
+        const steps = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+        const step = steps[idx];
+        const checkpoint = document.querySelector(`.progress-checkpoint[data-step="${step}"] .checkpoint-dot`);
+        checkpoint.style.background = '#4caf50';
+        checkpoint.style.borderColor = '#4caf50';
+    }
+    
+    // Function to move truck from warehouse to supplier
+    function moveTruckToSupplier() {
+        const supplier = document.querySelector('.supplier');
+        const warehouse = document.querySelector('.warehouse');
+        const supplierRect = supplier.getBoundingClientRect();
+        const warehouseRect = warehouse.getBoundingClientRect();
+        const mapRect = document.getElementById('return-map').getBoundingClientRect();
+        
+        // Calculate target position relative to the map
+        const targetX = supplierRect.left - mapRect.left + supplierRect.width/2 - 18;
+        const targetY = supplierRect.top - mapRect.top + supplierRect.height/2 - 18;
+        
+        // Move the truck
+        truck.style.left = targetX + 'px';
+        truck.style.top = targetY + 'px';
+        
+        // After animation completes, proceed to next step
+        setTimeout(() => {
+            markReturnCheckpoint(3);
+            updateReturnProgress(3);
+            displayReturnStep('D');
+        }, 1500);
+    }
+    
+    // Function to handle truck departure
+    function departTruck() {
+        // Set initial position at warehouse
+        truck.style.left = 'calc(100% - 120px)';
+        truck.style.top = '200px';
+        
+        // Move to supplier
+        moveTruckToSupplier();
+    }
+    
+    // Event listeners for each step
+    
+    // Step A: Create Return Document
+    document.getElementById('create-return-doc-btn').addEventListener('click', function() {
+        markReturnCheckpoint(0);
+        updateReturnProgress(1);
+        displayReturnStep('B');
+    });
+    
+    // Step B: Load Products
+    document.getElementById('load-products-btn').addEventListener('click', function() {
+        markReturnCheckpoint(1);
+        updateReturnProgress(2);
+        displayReturnStep('C');
+    });
+    
+    // Step C: Depart Truck
+    document.getElementById('depart-truck-btn').addEventListener('click', function() {
+        markReturnCheckpoint(2);
+        updateReturnProgress(3);
+        departTruck();
+    });
+    
+    // Step D: Receive Return
+    document.getElementById('receive-return-btn').addEventListener('click', function() {
+        markReturnCheckpoint(3);
+        updateReturnProgress(4);
+        displayReturnStep('E');
+    });
+    
+    // Step E: Issue Credit Invoice
+    document.getElementById('issue-credit-invoice-btn').addEventListener('click', function() {
+        markReturnCheckpoint(4);
+        updateReturnProgress(5);
+        displayReturnStep('F');
+    });
+    
+    // Step F: Send Email
+    document.getElementById('send-email-btn').addEventListener('click', function() {
+        markReturnCheckpoint(5);
+        updateReturnProgress(6);
+        displayReturnStep('G');
+    });
+    
+    // Step G: Confirm Email
+    document.getElementById('confirm-email-btn').addEventListener('click', function() {
+        markReturnCheckpoint(6);
+        updateReturnProgress(7);
+        displayReturnStep('H');
+    });
+    
+    // Step H: Register Credit
+    document.getElementById('register-credit-btn').addEventListener('click', function() {
+        markReturnCheckpoint(7);
+        updateReturnProgress(8);
+        displayReturnStep('I');
+    });
+    
+    // Step I: Validate Credit
+    document.getElementById('validate-credit-btn').addEventListener('click', function() {
+        markReturnCheckpoint(8);
+        updateReturnProgress(9);
+        
+        // Show completion message
+        const completionMessage = document.createElement('div');
+        completionMessage.className = 'completion-message';
+        completionMessage.style.background = '#4caf50';
+        completionMessage.style.color = '#fff';
+        completionMessage.style.padding = '16px';
+        completionMessage.style.borderRadius = '8px';
+        completionMessage.style.textAlign = 'center';
+        completionMessage.style.marginTop = '16px';
+        completionMessage.innerHTML = '<i class="fas fa-check-circle" style="margin-right: 8px;"></i> Η διαδικασία Επιστροφής Ολοκληρώθηκε';
+        
+        // Replace step I with completion message
+        stepI.style.display = 'none';
+        stepI.parentNode.appendChild(completionMessage);
+    });
+}

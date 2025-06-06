@@ -1146,6 +1146,156 @@
 
   </div> <!-- τέλος receiving-grid -->
 </section>
+{% elif procedure_id == 'returns' %}
+    <!-- ====================================================== -->
+    <!--  Διαδικασία Επιστροφής Αγορών (Purchase Returns)      -->
+    <!-- ====================================================== -->
+    <section class="procedure-section animate__animated animate__fadeIn" style="display: flex; gap: 16px;">
+
+      <!-- ================= Αριστερή Στήλη: Wizard‐Cards ================= -->
+      <div class="col-left" style="flex: 1; display: flex; flex-direction: column; gap: 24px;">
+        <!-- Step A: Έκδοση Δελτίου Επιστροφής Αγοράς (ΔΕΑ) -->
+        <div id="stepA" class="wizard-card active" style="background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px;">
+          <h4>Α. Έκδοση Δελτίου Επιστροφής Αγοράς (ΔΕΑ)</h4>
+          <p>Δημιούργησε το Δελτίο Επιστροφής Αγοράς. Περιέχει QRCODE (mydata).</p>
+          <button id="create-return-doc-btn" style="padding: 8px 16px; font-size: 16px; background: #2196f3; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-file-alt" style="margin-right: 6px;"></i> Δημιουργία ΔΕΑ
+          </button>
+        </div>
+
+        <!-- Step B: Φόρτωση Προϊόντων προς Επιστροφή -->
+        <div id="stepB" class="wizard-card" style="display: none; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px;">
+          <h4>Β. Φόρτωση Προϊόντων προς Επιστροφή</h4>
+          <p>Σάρωσε το barcode κάθε προϊόντος προς επιστροφή και τοποθέτησέ τα στο φορτηγό.</p>
+          <button id="load-products-btn" style="padding: 8px 16px; font-size: 16px; background: #2196f3; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-box" style="margin-right: 6px;"></i> Φόρτωση Προϊόντων
+          </button>
+        </div>
+
+        <!-- Step C: Μεταφορά Φορτηγού (Αποθήκη → Προμηθευτής) -->
+        <div id="stepC" class="wizard-card" style="display: none; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px;">
+          <h4>Γ. Μεταφορά Φορτηγού προς Προμηθευτή</h4>
+          <p>Σάρωσε το Δελτίο Επιστροφής (ΔΕΑ) πριν ξεκινήσει η διαδρομή.</p>
+          <button id="depart-truck-btn" style="padding: 8px 16px; font-size: 16px; background: #2196f3; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-truck-moving" style="margin-right: 6px;"></i> Εκκίνηση Φορτηγού
+          </button>
+        </div>
+
+        <!-- Step D: Παραλαβή από Προμηθευτή -->
+        <div id="stepD" class="wizard-card" style="display: none; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px;">
+          <h4>Δ. Παραλαβή από Προμηθευτή</h4>
+          <p>Σάρωσε το QRCODE του Δελτίου Επιστροφής (ΔΕΑ) από τον Προμηθευτή.</p>
+          <button id="receive-return-btn" style="padding: 8px 16px; font-size: 16px; background: #2196f3; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-check-circle" style="margin-right: 6px;"></i> Επιβεβαίωση Παράδοσης
+          </button>
+        </div>
+
+        <!-- Step E: Έκδοση Πιστωτικού Τιμολογίου -->
+        <div id="stepE" class="wizard-card" style="display: none; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px;">
+          <h4>Ε. Έκδοση Πιστωτικού Τιμολογίου</h4>
+          <p>Έκδωσε το Πιστωτικό, συνδέοντάς το με το Δελτίο Επιστροφής (ΔΕΑ).</p>
+          <button id="issue-credit-invoice-btn" style="padding: 8px 16px; font-size: 16px; background: #2196f3; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-file-invoice" style="margin-right: 6px;"></i> Έκδοση Πιστωτικού
+          </button>
+        </div>
+
+        <!-- Step F: Αποστολή με e-mail -->
+        <div id="stepF" class="wizard-card" style="display: none; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px;">
+          <h4>Ζ. Αποστολή με e-mail</h4>
+          <p>Στείλε το Πιστωτικό Τιμολόγιο στο λογαριασμό του Προμηθευτή.</p>
+          <button id="send-email-btn" style="padding: 8px 16px; font-size: 16px; background: #2196f3; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-envelope" style="margin-right: 6px;"></i> Αποστολή e-mail
+          </button>
+        </div>
+
+        <!-- Step G: Παραλαβή e-mail -->
+        <div id="stepG" class="wizard-card" style="display: none; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px;">
+          <h4>Η. Παραλαβή e-mail</h4>
+          <p>Το σύστημα λαμβάνει το e-mail επιβεβαίωσης από τον Προμηθευτή.</p>
+          <button id="confirm-email-btn" style="padding: 8px 16px; font-size: 16px; background: #2196f3; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-inbox" style="margin-right: 6px;"></i> Επιβεβαίωση Λήψης Email
+          </button>
+        </div>
+
+        <!-- Step H: Καταχώρηση Πιστωτικού (ΔΕΑ → Πιστωτικό) -->
+        <div id="stepH" class="wizard-card" style="display: none; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px;">
+          <h4>Θ. Καταχώρηση Πιστωτικού</h4>
+          <p>Μετέτρεψε το ΔΕΑ σε Πιστωτικό Τιμολόγιο και καταχώρησέ το.</p>
+          <button id="register-credit-btn" style="padding: 8px 16px; font-size: 16px; background: #2196f3; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-check" style="margin-right: 6px;"></i> Καταχώρηση Πιστωτικού
+          </button>
+        </div>
+
+        <!-- Step I: Έλεγχος Τιμών Πίστωσης -->
+        <div id="stepI" class="wizard-card" style="display: none; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px;">
+          <h4>Ι. Έλεγχος Τιμών Πίστωσης</h4>
+          <p>Επιβεβαίωσε ότι οι τιμές στο Πιστωτικό συμφωνούν με το ΔΕΑ.</p>
+          <button id="validate-credit-btn" style="padding: 8px 16px; font-size: 16px; background: #2196f3; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
+            <i class="fas fa-dollar-sign" style="margin-right: 6px;"></i> Έλεγχος Τιμών
+          </button>
+        </div>
+      </div>
+      <!-- =============== Τέλος Αριστερής Στήλης =============== -->
+
+
+      <!-- ============== Κεντρική Στήλη: Χάρτης & Animation ============== -->
+      <div class="col-center" style="flex: 2; position: relative;">
+        <h4 style="text-align: center; margin-bottom: 12px;"><i class="fas fa-map-marker-alt"></i> Χάρτης Επιστροφής</h4>
+        <!-- Κεντρικός χάρτης: Προμηθευτής (A) ← δρόμος → Αποθήκη (B) -->
+        <div id="return-map" class="warehouse-map" style="position: relative; width: 100%; height: 500px; background: #f5f5f5; border: 1px solid #ccc; border-radius: 8px;">
+          <!-- Σημείο Α: Προμηθευτής -->
+          <div class="location supplier" data-location="A" style="position: absolute; left: 20px; top: 220px; width: 80px; height: 40px; background: #90caf9; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+            Προμηθευτής
+          </div>
+          <!-- Σημείο Β: Η Αποθήκη μας -->
+          <div class="location warehouse" data-location="B" style="position: absolute; right: 20px; top: 220px; width: 80px; height: 40px; background: #a5d6a7; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+            Αποθήκη
+          </div>
+          <!-- Δρόμος -->
+          <div class="road" style="position: absolute; left: 100px; right: 100px; top: 240px; height: 4px; background: #9e9e9e;"></div>
+          <!-- Truck icon -->
+          <i id="truck" class="fas fa-truck" style="position: absolute; left: calc(100% - 120px); top: 200px; font-size: 36px; color: #ff9800; transition: left 1.5s ease, top 1.5s ease;"></i>
+        </div>
+        <!-- Progress bar & Checkpoints -->
+        <div style="margin-top: 16px;">
+          <div id="return-progress" class="progress-bar" style="background: #ddd; height: 8px; width: 0%; border-radius: 4px; transition: width 0.5s ease;"></div>
+          <div class="progress-percentage" style="text-align: center; font-size: 0.9rem; margin-top: 4px;">0% ολοκληρωμένο</div>
+          <div class="progress-checkpoints" style="display: flex; justify-content: space-around; margin-top: 8px;">
+            <div class="progress-checkpoint" data-step="A"><span class="checkpoint-dot" style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #bbb; border: 2px solid #bbb;"></span><span style="margin-left: 4px; font-size: 0.85rem;">Βήμα A</span></div>
+            <div class="progress-checkpoint" data-step="B"><span class="checkpoint-dot" style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #bbb; border: 2px solid #bbb;"></span><span style="margin-left: 4px; font-size: 0.85rem;">Βήμα B</span></div>
+            <div class="progress-checkpoint" data-step="C"><span class="checkpoint-dot" style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #bbb; border: 2px solid #bbb;"></span><span style="margin-left: 4px; font-size: 0.85rem;">Βήμα C</span></div>
+            <div class="progress-checkpoint" data-step="D"><span class="checkpoint-dot" style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #bbb; border: 2px solid #bbb;"></span><span style="margin-left: 4px; font-size: 0.85rem;">Βήμα D</span></div>
+            <div class="progress-checkpoint" data-step="E"><span class="checkpoint-dot" style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #bbb; border: 2px solid #bbb;"></span><span style="margin-left: 4px; font-size: 0.85rem;">Βήμα E</span></div>
+            <div class="progress-checkpoint" data-step="F"><span class="checkpoint-dot" style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #bbb; border: 2px solid #bbb;"></span><span style="margin-left: 4px; font-size: 0.85rem;">Βήμα F</span></div>
+            <div class="progress-checkpoint" data-step="G"><span class="checkpoint-dot" style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #bbb; border: 2px solid #bbb;"></span><span style="margin-left: 4px; font-size: 0.85rem;">Βήμα G</span></div>
+            <div class="progress-checkpoint" data-step="H"><span class="checkpoint-dot" style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #bbb; border: 2px solid #bbb;"></span><span style="margin-left: 4px; font-size: 0.85rem;">Βήμα H</span></div>
+            <div class="progress-checkpoint" data-step="I"><span class="checkpoint-dot" style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: #bbb; border: 2px solid #bbb;"></span><span style="margin-left: 4px; font-size: 0.85rem;">Βήμα I</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- =============== Τέλος Κεντρικής Στήλης =============== -->
+
+
+      <!-- ================= Δεξιά Στήλη: Status/Info ================= -->
+      <div class="col-right" style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
+        <div class="card info-card" style="background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px;">
+          <h4><i class="fas fa-info-circle"></i> Κατάσταση Επιστροφής</h4>
+          <ul style="margin-left: 16px;">
+            <li><strong>Βήμα A:</strong> Έκδοση ΔΕΑ</li>
+            <li><strong>Βήμα B:</strong> Φόρτωση Προϊόντων</li>
+            <li><strong>Βήμα C:</strong> Εκκίνηση Φορτηγού</li>
+            <li><strong>Βήμα D:</strong> Παραλαβή Προμηθευτή</li>
+            <li><strong>Βήμα E:</strong> Έκδοση Πιστωτικού</li>
+            <li><strong>Βήμα F:</strong> Αποστολή Email</li>
+            <li><strong>Βήμα G:</strong> Παραλαβή Email</li>
+            <li><strong>Βήμα H:</strong> Καταχώρηση Πιστωτικού</li>
+            <li><strong>Βήμα I:</strong> Έλεγχος Τιμών</li>
+          </ul>
+        </div>
+      </div>
+      <!-- =============== Τέλος Δεξιάς Στήλης =============== -->
+
+    </section>
 {% else %}
             <!-- Placeholder for other procedures -->
             <section class="procedure-section animate__animated animate__fadeIn">
