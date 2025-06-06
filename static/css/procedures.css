@@ -1,3 +1,69 @@
+:root {
+  --success-color: #4caf50; /* το πράσινο χρώμα για τα ticks στα checkpoints */
+}
+
+/* Προαιρετικά, μπορείς να προσθέσεις λίγο spacing γύρω από το grid */
+.receiving-grid {
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Increase height of the map center */
+.map-center {
+  min-height: 600px; /* Increased height for better visualization */
+}
+
+/* Όλα τα dock‐s και rack‐s να έχουν cursor:pointer για debugging */
+.dock, .rack {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Όταν τοποθετείς το forklift πάνω σε κάποιο dock ή rack, μπορείς να το κάνεις highlight */
+.dock.highlight, .rack.highlight {
+  background: #ffeb3b; /* κίτρινο highlight */
+}
+
+/* Styling για wizard‐cards (αν δεν έχεις ήδη) */
+.wizard-card h4 {
+  margin-top: 0;
+}
+
+/* Προσθήκη μικρής σκιάς στα cards */
+.sidebar-left .card, .sidebar-right .wizard-card {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+/* Progress bar styling (ή αν το έχεις ήδη σε άλλο αρχείο) */
+.progress-bar {
+  background: #ddd;
+  height: 8px;
+  width: 0%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+.progress-percentage {
+  text-align: right;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+/* Checkpoint dots styling */
+.progress-checkpoint {
+  display: inline-block;
+  margin-right: 24px;
+}
+.checkpoint-dot {
+  display: inline-block;
+  width: 12px; 
+  height: 12px;
+  border-radius: 50%; 
+  background: #bbb; 
+  border: 2px solid #bbb;
+  vertical-align: middle;
+  transition: background 0.3s, border-color 0.3s;
+}
+
 /* Procedure Navigation Styles */
 .procedure-navigation {
     background-color: #f0f8ff;

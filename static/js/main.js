@@ -1808,395 +1808,296 @@ if (window.location.pathname.includes('/procedures/')) {
     console.log("Path:", window.location.pathname);
 }
 
-// Initialize receiving process
+// --------------------------------------------------------------------------------
+// initReceivingProcess(): ξεκινάει το demo της Διαδικασίας Παραλαβής
+// --------------------------------------------------------------------------------
 function initReceivingProcess() {
-    console.log("Initializing receiving process");
+  console.log("Initializing Receiving Process");
 
-    // Variables to track the current state of the receiving process
-    let currentReceivingStep = 0;
-    let processingReceiving = false;
+  // Βασικά βήματα: A=Δελτίο, B=Παλέτα, C=Εκτύπωση, D=Ολοκλήρωση
+  let currentStep = 'A';
 
-    // Get DOM elements
-    const forklift = document.getElementById('forklift');
-    const receivingProgress = document.getElementById('receiving-progress');
-    const progressPercentage = document.querySelector('.progress-percentage');
-    const checkpoints = document.querySelectorAll('.progress-checkpoint');
-    const dynamicReceivingProcess = document.getElementById('dynamic-receiving-process');
-    const stepA = document.getElementById('stepA');
-    const stepB = document.getElementById('stepB');
-    const stepC = document.getElementById('stepC');
-    const stepD = document.getElementById('stepD');
+  // DOM elements:
+  const forklift = document.getElementById('forklift');
+  const receivingProgress = document.getElementById('receiving-progress');
+  const progressPercentage = document.querySelector('.progress-percentage');
+  const checkpoints = document.querySelectorAll('.progress-checkpoint');
+  const stepA = document.getElementById('stepA');
+  const stepB = document.getElementById('stepB');
+  const stepC = document.getElementById('stepC');
+  const stepD = document.getElementById('stepD');
+  const scanReceivingBtn = document.getElementById('load-rf-gun-btn'); // Updated ID to match the button in the HTML
+  const scanPalletBtn = document.getElementById('scan-pallet-btn');
+  const printLabelBtn = document.getElementById('print-label-btn');
+  const startForkliftBtn = document.getElementById('start-forklift-btn');
+  const finalReceiptTableBody = document.querySelector('#finalReceiptTable tbody');
 
-    // Define receiving route points
-    const receivingRoutePoints = [
-        { x: 280, y: 65 },    // Start at Dock Door 3
-        { x: 280, y: 200 },   // Move to Quality Control Area
-        { x: 280, y: 350 },   // Move to Staging Area
-        { x: 280, y: 470 }    // Move to Rack Area (R8)
+  // Τα Dock elements (D1…D7) και Rack elements (R1…R20):
+  const dockElements = document.querySelectorAll('.dock');
+  const rackElements = document.querySelectorAll('.rack');
+
+  // Συνάρτηση για εμφάνιση μόνο του κατάλληλου wizard‐card:
+  function displayStep(step) {
+    stepA.style.display = (step === 'A') ? 'block' : 'none';
+    stepB.style.display = (step === 'B') ? 'block' : 'none';
+    stepC.style.display = (step === 'C') ? 'block' : 'none';
+    stepD.style.display = (step === 'D') ? 'block' : 'none';
+  }
+
+  // Επαναφορά progress bar + checkpoints
+  function resetProgress() {
+    receivingProgress.style.width = '0%';
+    progressPercentage.innerText = '0% ολοκληρωμένο';
+    checkpoints.forEach(cp => {
+      const dot = cp.querySelector('.checkpoint-dot');
+      dot.style.backgroundColor = '#bbb';
+      dot.style.borderColor = '#bbb';
+    });
+  }
+
+  // Μαρκάρει πράσινο το αντίστοιχο dot (index 0→A, 1→B, 2→C, 3→D)
+  function markCheckpoint(idx) {
+    if (checkpoints[idx]) {
+      const dot = checkpoints[idx].querySelector('.checkpoint-dot');
+      dot.style.backgroundColor = 'var(--success-color)';
+      dot.style.borderColor = 'var(--success-color)';
+    }
+  }
+
+  // Ενημέρωση του progress bar (απλό 25% increments: A→B→C→D)
+  function updateProgressBar(idx) {
+    const percent = (idx + 1) * 25; // A=25%, B=50%, C=75%, D=100%
+    receivingProgress.style.width = percent + '%';
+    progressPercentage.innerText = percent + '% ολοκληρωμένο';
+  }
+
+  // ========================== Βήμα A: Σάρωση Δελτίου ==========================
+  scanReceivingBtn.addEventListener('click', () => {
+    console.log("Step A: Document scanned");
+    currentStep = 'B';
+    markCheckpoint(0);
+    updateProgressBar(0);
+    displayStep('B');
+  });
+
+  // ======================= Βήμα B: Σάρωση Παλέτας =======================
+  scanPalletBtn.addEventListener('click', () => {
+    console.log("Step B: Pallet scanned");
+    currentStep = 'C';
+    markCheckpoint(1);
+    updateProgressBar(1);
+    displayStep('C');
+  });
+
+  // ======================= Βήμα C: Εκτύπωση Label =======================
+  printLabelBtn.addEventListener('click', () => {
+    console.log("Step C: Label printed");
+    // Εμφάνιση μηνύματος επιβεβαίωσης
+    document.getElementById('printFeedbackC').innerText = "Το label εκτυπώθηκε με επιτυχία.";
+    document.getElementById('printStatusC').style.display = 'block';
+    currentStep = 'forklift'; // επόμενο 'forklift stage'
+    markCheckpoint(2);
+    updateProgressBar(2);
+    // Ξεκλειδώνουμε το κουμπί Forklift
+    startForkliftBtn.style.display = 'inline-block';
+  });
+
+  // ===================== Forklift Animation σε Dock→QC→Staging→Racks =====================
+  startForkliftBtn.addEventListener('click', () => {
+    console.log("Forklift animation started");
+    // Εμφάνιση φορτηγάς πάνω από το D3 αρχικά
+    forkRoute(dockElements, rackElements);
+  });
+
+  // ================================================================================
+  // Συνάρτηση forkRoute(): χειρίζεται την κίνηση του forklift πάνω σε:
+  //  1) Dock  (D1→D2→…→D7)
+  //  2) QC zone
+  //  3) Staging area
+  //  4) Racks (R1→R2→…→R20)
+  // ================================================================================
+  function forkRoute(docks, racks) {
+    // 1) Χάρτης με όλες τις "στάσεις" (DOM elements + zone‐coordinates)
+    const route = [];
+
+    // (α) Σημεία Docks
+    docks.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const parentRect = el.parentElement.getBoundingClientRect();
+      // Σχετικοί συντεταγμένοι μέσα στο parent container
+      const x = rect.left - parentRect.left + rect.width / 2 - 18; // -18 ώστε να "κεντράρει" το forklift (36px width)
+      const y = rect.top - parentRect.top + rect.height / 2 - 18;
+      route.push({ x, y, idx: docks.length > 1 ? parseInt(el.dataset.dock.replace('D', '')) - 1 : 0 });
+    });
+
+    // (β) Σημείο QC (το κέντρο του .qc-area)
+    const qcArea = document.querySelector('.qc-area');
+    const qcRect = qcArea.getBoundingClientRect();
+    const qcParent = qcArea.parentElement.getBoundingClientRect();
+    const qcX = qcRect.left - qcParent.left + qcRect.width / 2 - 18;
+    const qcY = qcRect.top - qcParent.top + qcRect.height / 2 - 18;
+    route.push({ x: qcX, y: qcY, idx: docks.length }); // idx = 7
+
+    // (γ) Σημείο Staging
+    const stagingArea = document.querySelector('.staging-area');
+    const stRect = stagingArea.getBoundingClientRect();
+    const stParent = stagingArea.parentElement.getBoundingClientRect();
+    const stX = stRect.left - stParent.left + stRect.width / 2 - 18;
+    const stY = stRect.top - stParent.top + stRect.height / 2 - 18;
+    route.push({ x: stX, y: stY, idx: docks.length + 1 }); // idx = 8
+
+    // (δ) Racks (R1→R2→…→R20)
+    racks.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const parentRect = el.parentElement.getBoundingClientRect();
+      const x = rect.left - parentRect.left + rect.width / 2 - 18;
+      const y = rect.top - parentRect.top + rect.height / 2 - 18;
+      // idx: θα ξεκινάει από 9 (μετά QC=7, Staging=8) … μέχρι 9+19=28
+      const rackIdx = parseInt(el.dataset.rack.replace('R', '')) - 1;
+      route.push({ x, y, idx: docks.length + 1 + rackIdx });
+    });
+
+    // Έτσι:  
+    // ‣ route[0..6] = D1..D7 (idx 0..6)  
+    // ‣ route[7] = QC (idx 7)  
+    // ‣ route[8] = Staging (idx 8)  
+    // ‣ route[9..28] = R1..R20 (idx 9..28)  
+
+    // Τώρα, εκτελούμε το animation βήμα‐βήμα:
+    let step = 0;
+
+    function moveNext() {
+      if (step >= route.length) {
+        // Όλοι οι πομποί ολοκληρώθηκαν → Βήμα D (Ολοκλήρωση)
+        markCheckpoint(3);        // idx=3 → D  
+        updateProgressBar(3);     // 100%  
+        displayStep('D');
+        fillFinalReceiptTable();
+        return;
+      }
+      const target = route[step];
+      forklift.style.left = target.x + 'px';
+      forklift.style.top = target.y + 'px';
+
+      // Μετά από 1s (CSS transition), μαρκάρουμε checkpoint αν idx<4
+      setTimeout(() => {
+        if (target.idx < 4) {
+          // μόνον αν idx ≤ 3 (Docks idx 0..6, QC idx 7, but εμείς ενδιαφερόμαστε 
+          // για τα τέσσερα κυρίαρχα βήματα A→B→C→D, τα οποία ήδη μαρκαρίσαμε 
+          // στα προηγούμενα στάδια). Στην πράξη, έχουμε κάνει ήδη markCheckpoint(2) 
+          // στο "Εκτύπωση Label", οπότε εδώ κάνουμε μόνο mark 3 (Ολοκλήρωση).
+        }
+        step++;
+        // Προχωράμε στο επόμενο σημείο μετά από 800ms
+        setTimeout(moveNext, 800);
+      }, 1000);
+    }
+
+    // Εκκίνηση animation
+    moveNext();
+  }
+
+  // ================================ Step D Helper ================================
+  function fillFinalReceiptTable() {
+    const demoItems = [
+      { sku: 'VID-TB-150', qty: 10 },
+      { sku: 'PCK-RL-90', qty: 5 },
+      { sku: 'BTL-WN-10', qty: 20 }
     ];
-
-    // Initialize the receiving process
-    function startReceivingProcess() {
-        console.log("Starting receiving process");
-
-        // Reset progress indicators
-        resetReceivingProgress();
-
-        // Start the forklift animation
-        moveForkliftToNextPoint();
-    }
-
-    // Reset progress indicators
-    function resetReceivingProgress() {
-        console.log("Resetting receiving progress");
-
-        // Reset progress bar
-        if (receivingProgress) {
-            receivingProgress.style.width = '0%';
-        }
-
-        // Reset progress percentage
-        if (progressPercentage) {
-            progressPercentage.textContent = '0% ολοκληρωμένο';
-        }
-
-        // Reset checkpoints
-        if (checkpoints) {
-            checkpoints.forEach(checkpoint => {
-                checkpoint.classList.remove('completed');
-
-                // Reset checkpoint dot colors
-                const checkpointDot = checkpoint.querySelector('.checkpoint-dot');
-                if (checkpointDot) {
-                    checkpointDot.style.backgroundColor = '#e9ecef';
-                    checkpointDot.style.borderColor = 'var(--primary-color)';
-                }
-            });
-        }
-
-        // Reset wizard steps
-        if (stepA) stepA.style.display = 'block';
-        if (stepB) stepB.style.display = 'none';
-        if (stepC) stepC.style.display = 'none';
-        if (stepD) stepD.style.display = 'none';
-
-        // Reset state variables
-        currentReceivingStep = 0;
-        processingReceiving = false;
-    }
-
-    // Move forklift to next point in the route
-    function moveForkliftToNextPoint() {
-        console.log("Moving forklift to next point, currentReceivingStep:", currentReceivingStep);
-
-        // If we're currently processing a location, wait and check again later
-        if (processingReceiving) {
-            console.log("Processing receiving, waiting 1 second before checking again");
-            setTimeout(moveForkliftToNextPoint, 1000);
-            return;
-        }
-
-        // Check if we've reached the end of the route
-        if (currentReceivingStep >= receivingRoutePoints.length) {
-            console.log("Route complete, stopping at final point");
-            return;
-        }
-
-        const targetPoint = receivingRoutePoints[currentReceivingStep];
-        console.log("Moving to point:", currentReceivingStep, "coordinates:", targetPoint.x, targetPoint.y);
-        animateForklift(targetPoint.x, targetPoint.y);
-
-        // Check if this is a receiving action point
-        if (currentReceivingStep === 0) {
-            // At Dock Door 3 - Show Step A
-            showReceivingAction(targetPoint.x, targetPoint.y, 'A');
-        } else if (currentReceivingStep === 1) {
-            // At Quality Control Area - Show Step B
-            showReceivingAction(targetPoint.x, targetPoint.y, 'B');
-        } else if (currentReceivingStep === 2) {
-            // At Staging Area - Show Step C
-            showReceivingAction(targetPoint.x, targetPoint.y, 'C');
-        } else if (currentReceivingStep === 3) {
-            // At Rack Area - Show Step D
-            showReceivingAction(targetPoint.x, targetPoint.y, 'D');
-        } else {
-            // If this is not a receiving action point, continue to the next point
-            currentReceivingStep++;
-        }
-    }
-
-    // Animate forklift movement
-    function animateForklift(targetX, targetY) {
-        const currentX = parseInt(forklift.style.left) || receivingRoutePoints[0].x;
-        const currentY = parseInt(forklift.style.top) || receivingRoutePoints[0].y;
-
-        // Calculate distance and duration
-        const distance = Math.sqrt(Math.pow(targetX - currentX, 2) + Math.pow(targetY - currentY, 2));
-        const duration = distance * 10; // 10ms per pixel
-
-        // Set forklift orientation
-        if (targetX > currentX) {
-            forklift.style.transform = 'scaleX(1)';
-        } else if (targetX < currentX) {
-            forklift.style.transform = 'scaleX(-1)';
-        } else if (targetY < currentY) {
-            forklift.style.transform = 'rotate(-90deg)';
-        } else if (targetY > currentY) {
-            forklift.style.transform = 'rotate(90deg)';
-        }
-
-        // Animate forklift movement
-        forklift.style.transition = `left ${duration}ms linear, top ${duration}ms linear`;
-        updateForkliftPosition(targetX, targetY);
-
-        // If this is not a receiving action point, move to the next point after animation completes
-        if (currentReceivingStep === 0 || currentReceivingStep === 1 || currentReceivingStep === 2 || currentReceivingStep === 3) {
-            // If this is a receiving action point, we'll wait for the receiving process to complete
-            console.log("This is a receiving action point, waiting for receiving process to complete");
-        } else {
-            console.log("This is not a receiving action point, moving to next point after animation completes");
-            setTimeout(moveForkliftToNextPoint, duration + 1000);
-        }
-    }
-
-    // Update forklift position
-    function updateForkliftPosition(x, y) {
-        forklift.style.left = `${x}px`;
-        forklift.style.top = `${y}px`;
-    }
-
-    // Show receiving action at a specific location
-    function showReceivingAction(x, y, step) {
-        console.log("Showing receiving action for step:", step);
-
-        // Set processingReceiving flag to true
-        processingReceiving = true;
-
-        // Create receiving action indicator
-        const receivingAction = document.createElement('div');
-        receivingAction.className = 'picking-action';
-        receivingAction.style.left = `${x + 30}px`;
-        receivingAction.style.top = `${y - 30}px`;
-        receivingAction.innerHTML = '<i class="fas fa-hand-paper"></i>';
-        document.getElementById('receiving-map').appendChild(receivingAction);
-
-        // Show toast notification for location change
-        let locationName = '';
-        if (step === 'A') {
-            locationName = 'Dock Door 3';
-        } else if (step === 'B') {
-            locationName = 'Ζώνη Ελέγχου';
-        } else if (step === 'C') {
-            locationName = 'Ζώνη Αναμονής Παλετών';
-        } else if (step === 'D') {
-            locationName = 'Ράφι R8';
-        }
-        showToast(`Μετάβαση στη θέση ${locationName}`, 'info');
-
-        // Update the current location in the worker details card
-        const currentLocation = document.getElementById('current-location');
-        if (currentLocation) {
-            currentLocation.textContent = locationName;
-        }
-
-        // Update the wizard step
-        updateReceivingStep(step);
-    }
-
-    // Update the receiving step
-    function updateReceivingStep(step) {
-        console.log("Updating receiving step to:", step);
-
-        // Hide all steps
-        if (stepA) stepA.style.display = 'none';
-        if (stepB) stepB.style.display = 'none';
-        if (stepC) stepC.style.display = 'none';
-        if (stepD) stepD.style.display = 'none';
-
-        // Show the current step
-        if (step === 'A' && stepA) {
-            stepA.style.display = 'block';
-            updateProgressBar(0);
-        } else if (step === 'B' && stepB) {
-            stepB.style.display = 'block';
-            updateProgressBar(25);
-        } else if (step === 'C' && stepC) {
-            stepC.style.display = 'block';
-            updateProgressBar(50);
-        } else if (step === 'D' && stepD) {
-            stepD.style.display = 'block';
-            updateProgressBar(75);
-        }
-
-        // Add event listeners to the action buttons
-        const actionButton = document.querySelector(`#step${step} .action-button`);
-        if (actionButton) {
-            // Remove any existing event listeners
-            const newActionButton = actionButton.cloneNode(true);
-            actionButton.parentNode.replaceChild(newActionButton, actionButton);
-
-            // Add new event listener
-            newActionButton.addEventListener('click', () => {
-                console.log(`Action button clicked for step ${step}`);
-                completeReceivingStep(step);
-            });
-        }
-    }
-
-    // Complete the current receiving step
-    function completeReceivingStep(step) {
-        console.log("Completing receiving step:", step);
-
-        // Update the progress bar
-        if (step === 'A') {
-            updateProgressBar(25);
-            // Mark the checkpoint as completed
-            if (checkpoints && checkpoints[0]) {
-                checkpoints[0].classList.add('completed');
-                const checkpointDot = checkpoints[0].querySelector('.checkpoint-dot');
-                if (checkpointDot) {
-                    checkpointDot.style.backgroundColor = 'var(--success-color)';
-                    checkpointDot.style.borderColor = 'var(--success-color)';
-                }
-            }
-            // Show success toast
-            showToast('Το Δελτίο Παραλαβής φορτώθηκε επιτυχώς στο RF Gun', 'success');
-            // Increment the current step
-            currentReceivingStep++;
-            // Set processingReceiving flag to false
-            processingReceiving = false;
-            // Move to the next point
-            setTimeout(moveForkliftToNextPoint, 1000);
-        } else if (step === 'B') {
-            updateProgressBar(50);
-            // Mark the checkpoint as completed
-            if (checkpoints && checkpoints[1]) {
-                checkpoints[1].classList.add('completed');
-                const checkpointDot = checkpoints[1].querySelector('.checkpoint-dot');
-                if (checkpointDot) {
-                    checkpointDot.style.backgroundColor = 'var(--success-color)';
-                    checkpointDot.style.borderColor = 'var(--success-color)';
-                }
-            }
-            // Show success toast
-            showToast('Η παλέτα σαρώθηκε επιτυχώς και η ποσότητα επιβεβαιώθηκε', 'success');
-            // Increment the current step
-            currentReceivingStep++;
-            // Set processingReceiving flag to false
-            processingReceiving = false;
-            // Move to the next point
-            setTimeout(moveForkliftToNextPoint, 1000);
-        } else if (step === 'C') {
-            updateProgressBar(75);
-            // Mark the checkpoint as completed
-            if (checkpoints && checkpoints[2]) {
-                checkpoints[2].classList.add('completed');
-                const checkpointDot = checkpoints[2].querySelector('.checkpoint-dot');
-                if (checkpointDot) {
-                    checkpointDot.style.backgroundColor = 'var(--success-color)';
-                    checkpointDot.style.borderColor = 'var(--success-color)';
-                }
-            }
-            // Show success toast
-            showToast('Το label της παλέτας εκτυπώθηκε επιτυχώς', 'success');
-            // Increment the current step
-            currentReceivingStep++;
-            // Set processingReceiving flag to false
-            processingReceiving = false;
-            // Move to the next point
-            setTimeout(moveForkliftToNextPoint, 1000);
-        } else if (step === 'D') {
-            updateProgressBar(100);
-            // Mark the checkpoint as completed
-            if (checkpoints && checkpoints[3]) {
-                checkpoints[3].classList.add('completed');
-                const checkpointDot = checkpoints[3].querySelector('.checkpoint-dot');
-                if (checkpointDot) {
-                    checkpointDot.style.backgroundColor = 'var(--success-color)';
-                    checkpointDot.style.borderColor = 'var(--success-color)';
-                }
-            }
-            // Show success toast
-            showToast('Η παραλαβή ολοκληρώθηκε επιτυχώς και το ERP ενημερώθηκε', 'success');
-            // Increment the current step
-            currentReceivingStep++;
-            // Set processingReceiving flag to false
-            processingReceiving = false;
-            // Process is complete, no need to move to the next point
-        }
-    }
-
-    // Update the progress bar
-    function updateProgressBar(percentage) {
-        console.log("Updating progress bar to:", percentage);
-
-        // Update the progress bar width
-        if (receivingProgress) {
-            receivingProgress.style.width = `${percentage}%`;
-        }
-
-        // Update the progress percentage text
-        if (progressPercentage) {
-            progressPercentage.textContent = `${percentage}% ολοκληρωμένο`;
-        }
-    }
-
-    // Start the receiving process
-    startReceivingProcess();
-
-    // Add event listeners to the dock doors
-    const dockDoors = document.querySelectorAll('.dock-door');
-    dockDoors.forEach(door => {
-        door.addEventListener('mouseenter', () => {
-            const doorId = door.id.split('-')[1];
-            const tooltip = document.createElement('div');
-            tooltip.className = 'rack-tooltip';
-            tooltip.style.position = 'absolute';
-            tooltip.style.top = `${parseInt(door.style.top) - 40}px`;
-            tooltip.style.left = `${parseInt(door.style.left)}px`;
-            tooltip.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-            tooltip.style.color = 'white';
-            tooltip.style.padding = '5px 10px';
-            tooltip.style.borderRadius = '5px';
-            tooltip.style.zIndex = '100';
-            tooltip.style.pointerEvents = 'none';
-            tooltip.innerHTML = `Dock/Door #${doorId} – Barcode: DCK-0${doorId} – Αριθμός Παλέτας: PAL-321`;
-            document.getElementById('receiving-map').appendChild(tooltip);
-        });
-
-        door.addEventListener('mouseleave', () => {
-            const tooltip = document.querySelector('.rack-tooltip');
-            if (tooltip) {
-                tooltip.remove();
-            }
-        });
+    finalReceiptTableBody.innerHTML = '';
+    demoItems.forEach(item => {
+      const tr = document.createElement('tr');
+      const tdSku = document.createElement('td');
+      tdSku.innerText = item.sku;
+      const tdQty = document.createElement('td');
+      tdQty.innerText = item.qty;
+      tr.appendChild(tdSku);
+      tr.appendChild(tdQty);
+      finalReceiptTableBody.appendChild(tr);
     });
+  }
 
-    // Add event listeners to the racks
-    const racks = document.querySelectorAll('.rack');
-    racks.forEach(rack => {
-        rack.addEventListener('mouseenter', () => {
-            const rackId = rack.id.split('-')[1];
-            const tooltip = document.createElement('div');
-            tooltip.className = 'rack-tooltip';
-            tooltip.style.position = 'absolute';
-            tooltip.style.top = `${parseInt(rack.style.top) - 40}px`;
-            tooltip.style.left = `${parseInt(rack.style.left)}px`;
-            tooltip.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-            tooltip.style.color = 'white';
-            tooltip.style.padding = '5px 10px';
-            tooltip.style.borderRadius = '5px';
-            tooltip.style.zIndex = '100';
-            tooltip.style.pointerEvents = 'none';
-            tooltip.innerHTML = `Rack R${rackId} – Συνιστώμενη τοποθέτηση VID-TB-150`;
-            document.getElementById('receiving-map').appendChild(tooltip);
-        });
+  // ================================= Αρχική Ρύθμιση =================================
+  displayStep('A');
+  resetProgress();
+  // Αρχικά κρύψε τα κουμπιά που θα εμφανιστούν αργότερα:
+  document.getElementById('printStatusC').style.display = 'none';
+  startForkliftBtn.style.display = 'none';
 
-        rack.addEventListener('mouseleave', () => {
-            const tooltip = document.querySelector('.rack-tooltip');
-            if (tooltip) {
-                tooltip.remove();
-            }
-        });
+  // ================================= startReceivingProcess =================================
+  // Συνάρτηση που ξεκινάει το demo της Διαδικασίας Παραλαβής
+  function startReceivingProcess() {
+    console.log("Starting Receiving Process");
+    resetProgress();
+    checkpoints.forEach(cp => {
+      const dot = cp.querySelector('.checkpoint-dot');
+      dot.style.backgroundColor = '#bbb';
+      dot.style.borderColor = '#bbb';
     });
+    displayStep('A');
+    currentStep = 'A';
+
+    // Προσομοίωση του κλικ στο κουμπί "Φόρτωση στο RF Gun"
+    setTimeout(() => {
+      console.log("Step A: Document scanned");
+      currentStep = 'B';
+      markCheckpoint(0);
+      updateProgressBar(0);
+      displayStep('B');
+
+      // Προσομοίωση του κλικ στο κουμπί "Σάρωση Παλέτας"
+      setTimeout(() => {
+        console.log("Step B: Pallet scanned");
+        currentStep = 'C';
+        markCheckpoint(1);
+        updateProgressBar(1);
+        displayStep('C');
+
+        // Προσομοίωση του κλικ στο κουμπί "Εκτύπωση Label"
+        setTimeout(() => {
+          console.log("Step C: Label printed");
+          document.getElementById('printFeedbackC').innerText = "Το label εκτυπώθηκε με επιτυχία.";
+          document.getElementById('printStatusC').style.display = 'block';
+          currentStep = 'forklift';
+          markCheckpoint(2);
+          updateProgressBar(2);
+
+          // Προσομοίωση του κλικ στο κουμπί "Μετακίνηση Παλετών"
+          setTimeout(() => {
+            console.log("Forklift animation started");
+            forkRoute(dockElements, rackElements);
+          }, 800);
+        }, 800);
+      }, 800);
+    }, 400);
+  }
+
+  // Κάνουμε τη συνάρτηση διαθέσιμη παγκοσμίως
+  window.startReceivingProcess = startReceivingProcess;
 }
+
+// --------------------------------------------------------------------------------
+// Αυτόματη κλήση initReceivingProcess() αν φορτωθεί σελίδα με #receiving-map
+// --------------------------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('receiving-map')) {
+    initReceivingProcess();
+  }
+});
+
+// --------------------------------------------------------------------------------
+// Συνδέουμε το κουμπί "Φόρτωση στο RF Gun" με την εκκίνηση του demo
+// --------------------------------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+  const loadRfGunBtn = document.getElementById('load-rf-gun-btn');
+  if (loadRfGunBtn) {
+    loadRfGunBtn.addEventListener('click', () => {
+      // Καλούμε τη συνάρτηση που αρχικά τρέχει το receiving demo
+      if (typeof startReceivingProcess === 'function') {
+        startReceivingProcess();
+      } else {
+        console.error('startReceivingProcess() δεν βρέθηκε στο main.js');
+      }
+    });
+  }
+});
