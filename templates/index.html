@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Οπτικοποίηση Συστήματος Διαχείρισης Επιχειρησιακών Πόρων</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/apple-style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1 class="animate__animated animate__fadeIn">Οπτικοποίηση Συστήματος Διαχείρισης Επιχειρησιακών Πόρων</h1>
+        </div>
+    </header>
+
+    <div class="procedure-selector">
+        <div class="container">
+            <h2 class="animate__animated animate__fadeIn">Επιλέξτε Κύκλωμα και Διαδικασία</h2>
+
+            <!-- Tab Navigation -->
+            <div class="tab-navigation animate__animated animate__fadeIn">
+                <!-- Tab buttons with data-tab attributes that match the tab pane IDs -->
+                <button class="tab-button active" data-tab="purchasing" onclick="document.getElementById('purchasing').classList.add('active')">Κύκλωμα Αγορών</button>
+                <button class="tab-button" data-tab="sales" onclick="document.getElementById('sales').classList.add('active')">Κύκλωμα Πωλήσεων</button>
+                <button class="tab-button" data-tab="financial" onclick="document.getElementById('financial').classList.add('active')">ΧρηματοΟικονομικά</button>
+                <button class="tab-button" data-tab="marketing" onclick="document.getElementById('marketing').classList.add('active')">Μάρκετινγκ</button>
+                <button class="tab-button" data-tab="e-shop" onclick="document.getElementById('e-shop').classList.add('active')">E-Shop</button>
+                <button class="tab-button" data-tab="it" onclick="document.getElementById('it').classList.add('active')">IT</button>
+                <button class="tab-button" data-tab="hr" onclick="document.getElementById('hr').classList.add('active')">HR</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Purchasing Circuit Tab -->
+                <div class="tab-pane active" id="purchasing">
+                    <div class="procedure-cards">
+                        <div class="procedure-card animate__animated animate__fadeInUp" onclick="window.location.href='/procedures/receiving'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-dolly-flatbed"></i>
+                            </div>
+                            <h3>Διαδικασία Παραλαβής</h3>
+                            <p>Παραλαβή εμπορευμάτων από παραγγελίες προμηθευτών</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s" onclick="window.location.href='/procedures/purchase-order-processing'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-file-invoice"></i>
+                            </div>
+                            <h3>Επεξεργασία Παραγγελιών Αγοράς</h3>
+                            <p>Διαχείριση παραγγελιών προς προμηθευτές</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s" onclick="window.location.href='/procedures/inventory'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                            <h3>Διαχείριση Αποθέματος</h3>
+                            <p>Παρακολούθηση και διαχείριση αποθεμάτων</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s" onclick="window.location.href='/procedures/purchase-returns'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-undo-alt"></i>
+                            </div>
+                            <h3>Επιστροφές Αγορών</h3>
+                            <p>Διαχείριση επιστροφών προς προμηθευτές</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sales Circuit Tab -->
+                <div class="tab-pane" id="sales">
+                    <div class="procedure-cards">
+                        <div class="procedure-card animate__animated animate__fadeInUp" onclick="window.location.href='/procedures/picking-list'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <h3>Λίστα Συλλογής</h3>
+                            <p>Αναλυτική διαδικασία συλλογής προϊόντων από την αποθήκη</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s" onclick="window.location.href='/procedures/order-processing'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-file-invoice"></i>
+                            </div>
+                            <h3>Επεξεργασία Παραγγελιών Πώλησης</h3>
+                            <p>Διαδικασία λήψης και επεξεργασίας παραγγελιών πελατών</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s" onclick="window.location.href='/procedures/shipping'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-shipping-fast"></i>
+                            </div>
+                            <h3>Αποστολή & Παράδοση</h3>
+                            <p>Διαδικασία αποστολής και παράδοσης προϊόντων</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s" onclick="window.location.href='/procedures/returns'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-undo-alt"></i>
+                            </div>
+                            <h3>Διαχείριση Επιστροφών</h3>
+                            <p>Επεξεργασία επιστροφών και αντικαταστάσεων από πελάτες</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s" onclick="window.location.href='/procedures/invoicing'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <h3>Τιμολόγηση</h3>
+                            <p>Διαδικασία έκδοσης και διαχείρισης τιμολογίων</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Tab -->
+                <div class="tab-pane" id="financial">
+                    <div class="procedure-cards">
+                        <div class="procedure-card animate__animated animate__fadeInUp" onclick="window.location.href='/procedures/accounting'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h3>Λογιστική</h3>
+                            <p>Διαχείριση λογιστικών εγγραφών και οικονομικών καταστάσεων</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s" onclick="window.location.href='/procedures/payments'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <h3>Πληρωμές</h3>
+                            <p>Διαχείριση πληρωμών προς προμηθευτές</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s" onclick="window.location.href='/procedures/receivables'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-hand-holding-usd"></i>
+                            </div>
+                            <h3>Εισπράξεις</h3>
+                            <p>Διαχείριση εισπράξεων από πελάτες</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Marketing Tab -->
+                <div class="tab-pane" id="marketing">
+                    <div class="procedure-cards">
+                        <div class="procedure-card animate__animated animate__fadeInUp" onclick="window.location.href='/procedures/campaigns'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-bullhorn"></i>
+                            </div>
+                            <h3>Καμπάνιες</h3>
+                            <p>Σχεδιασμός και διαχείριση διαφημιστικών καμπανιών</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s" onclick="window.location.href='/procedures/customer-analytics'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3>Ανάλυση Πελατών</h3>
+                            <p>Ανάλυση δεδομένων πελατών και συμπεριφοράς αγορών</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- E-Shop Tab -->
+                <div class="tab-pane" id="e-shop">
+                    <div class="procedure-cards">
+                        <div class="procedure-card animate__animated animate__fadeInUp" onclick="window.location.href='/procedures/online-store'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <h3>Ηλεκτρονικό Κατάστημα</h3>
+                            <p>Διαχείριση προϊόντων και παραγγελιών ηλεκτρονικού καταστήματος</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s" onclick="window.location.href='/procedures/online-orders'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-laptop"></i>
+                            </div>
+                            <h3>Online Παραγγελίες</h3>
+                            <p>Επεξεργασία και διαχείριση παραγγελιών από το ηλεκτρονικό κατάστημα</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s" onclick="window.location.href='/procedures/digital-marketing'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-ad"></i>
+                            </div>
+                            <h3>Digital Marketing</h3>
+                            <p>Στρατηγικές προώθησης και διαφήμισης του ηλεκτρονικού καταστήματος</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s" onclick="window.location.href='/procedures/customer-support'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <h3>Εξυπηρέτηση Πελατών</h3>
+                            <p>Διαχείριση αιτημάτων και υποστήριξη πελατών του ηλεκτρονικού καταστήματος</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IT Tab -->
+                <div class="tab-pane" id="it">
+                    <div class="procedure-cards">
+                        <div class="procedure-card animate__animated animate__fadeInUp" onclick="window.location.href='/procedures/system-maintenance'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <h3>Συντήρηση Συστημάτων</h3>
+                            <p>Διαχείριση και συντήρηση πληροφοριακών συστημάτων</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s" onclick="window.location.href='/procedures/user-support'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-headset"></i>
+                            </div>
+                            <h3>Υποστήριξη Χρηστών</h3>
+                            <p>Τεχνική υποστήριξη και επίλυση προβλημάτων χρηστών</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s" onclick="window.location.href='/procedures/data-analysis'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h3>Ανάλυση Δεδομένων</h3>
+                            <p>Εξαγωγή πληροφοριών και γνώσεων από δεδομένα για λήψη αποφάσεων</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s" onclick="window.location.href='/procedures/business-intelligence'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h3>Business Intelligence</h3>
+                            <p>Εργαλεία και τεχνικές για μετατροπή δεδομένων σε επιχειρηματική γνώση</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s" onclick="window.location.href='/procedures/data-science'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-atom"></i>
+                            </div>
+                            <h3>Data Science</h3>
+                            <p>Εφαρμογή επιστημονικών μεθόδων και αλγορίθμων για εξαγωγή γνώσης από δεδομένα</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.5s" onclick="window.location.href='/procedures/data-warehouse'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h3>Warehouse Data</h3>
+                            <p>Διαχείριση και αποθήκευση δεδομένων για αναλυτικούς σκοπούς</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.6s" onclick="window.location.href='/procedures/data-mining'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-microscope"></i>
+                            </div>
+                            <h3>Data Mining</h3>
+                            <p>Εξόρυξη προτύπων και συσχετίσεων από μεγάλους όγκους δεδομένων</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.7s" onclick="window.location.href='/procedures/data-cleaning'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-broom"></i>
+                            </div>
+                            <h3>Data Cleaning</h3>
+                            <p>Διαδικασίες καθαρισμού και προετοιμασίας δεδομένων για ανάλυση</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.8s" onclick="window.location.href='/procedures/data-visualization'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-chart-pie"></i>
+                            </div>
+                            <h3>Data Representation</h3>
+                            <p>Οπτικοποίηση δεδομένων για καλύτερη κατανόηση και παρουσίαση</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HR Tab -->
+                <div class="tab-pane" id="hr">
+                    <div class="procedure-cards">
+                        <div class="procedure-card animate__animated animate__fadeInUp" onclick="window.location.href='/procedures/recruitment'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <h3>Προσλήψεις</h3>
+                            <p>Διαδικασία προσλήψεων και ένταξης νέων εργαζομένων</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s" onclick="window.location.href='/procedures/payroll'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-money-check-alt"></i>
+                            </div>
+                            <h3>Μισθοδοσία</h3>
+                            <p>Διαχείριση μισθοδοσίας και παροχών εργαζομένων</p>
+                        </div>
+
+                        <div class="procedure-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s" onclick="window.location.href='/procedures/training'">
+                            <div class="procedure-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <h3>Εκπαίδευση</h3>
+                            <p>Διαχείριση εκπαιδευτικών προγραμμάτων για εργαζομένους</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="container">
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; {{ current_year }} Logistics ERP Visualization System - Ioannis E. Kommas Business Intelligence. All rights Reserved</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
+    <script src="{{ url_for('static', path='/js/apple-animations.js') }}"></script>
+</body>
+</html>

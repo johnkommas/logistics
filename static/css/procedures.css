@@ -1,0 +1,1690 @@
+/* Procedure Navigation Styles */
+.procedure-navigation {
+    background-color: #f0f8ff;
+    padding: 15px 0;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 30px;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+    margin-bottom: 10px;
+    transition: color 0.3s;
+}
+
+.back-button:hover {
+    color: var(--accent-color);
+}
+
+.back-button i {
+    margin-right: 5px;
+}
+
+.procedure-title {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+/* Procedure Section Styles */
+.procedure-section {
+    margin-bottom: 40px;
+}
+
+.procedure-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    color: #555;
+}
+
+.procedure-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px; /* Reduced from 25px to provide more space for content */
+    margin-bottom: 30px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden; /* Added to ensure content doesn't overflow */
+}
+
+.procedure-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.procedure-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+}
+
+.procedure-card h3 i {
+    margin-right: 10px;
+    font-size: 1.6rem;
+}
+
+/* Document Comparison Styles - New Implementation */
+.document-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow-x: auto; /* Allow horizontal scrolling if needed */
+}
+
+.document-left, .document-right {
+    flex: 1;
+    max-width: 45%; /* Ensure they don't take up too much space */
+}
+
+.document-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.document-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 15px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.document-header i {
+    margin-right: 10px;
+}
+
+.document-header-success {
+    background-color: var(--success-color);
+}
+
+.document-content {
+    padding: 15px;
+    background-color: white;
+}
+
+.document-content p {
+    margin-bottom: 10px;
+}
+
+.document-content ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 10px;
+}
+
+.document-content ul li {
+    padding: 3px 0;
+    position: relative;
+    padding-left: 15px;
+}
+
+.document-content ul li:before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+}
+
+.document-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 20px;
+    color: var(--primary-color);
+}
+
+.document-arrow i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+    .document-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .document-left, .document-right {
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .document-arrow {
+        flex-direction: row;
+        justify-content: center;
+        margin: 10px 0;
+        padding: 10px 0;
+    }
+
+    .document-arrow i {
+        margin-bottom: 0;
+        margin-right: 10px;
+    }
+}
+
+/* Legacy Document Comparison Styles - Kept for backward compatibility */
+.document-comparison {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.document {
+    flex: 1 1 0;
+    min-width: 180px;
+    max-width: calc(50% - 15px);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    overflow-x: auto;
+}
+
+.conversion-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    color: var(--primary-color);
+    min-width: 60px;
+}
+
+.conversion-arrow i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.status-pending {
+    color: var(--warning-color);
+    font-weight: bold;
+}
+
+.status-success {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+/* Device Simulation Styles */
+.device-simulation {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: space-between;
+}
+
+.rfid-device, .barcode-device {
+    flex: 1;
+    min-width: 300px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.device-header {
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.device-header i {
+    margin-right: 10px;
+    font-size: 1.5rem;
+}
+
+.device-screen {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.screen-header {
+    background-color: #333;
+    color: white;
+    padding: 8px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.screen-content {
+    padding: 15px;
+    background-color: #e8e8e8;
+}
+
+.screen-item {
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.screen-title {
+    margin: 0;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.screen-subtitle {
+    margin: 5px 0 0 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.location-path {
+    margin: 5px 0 0 0;
+    color: var(--primary-color);
+}
+
+.screen-action {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.action-button {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.action-button:hover {
+    background-color: var(--accent-color);
+}
+
+.success-button {
+    background-color: var(--success-color);
+}
+
+.success-button:hover {
+    background-color: #218838;
+}
+
+.device-arrow {
+    text-align: center;
+    margin: 20px 0;
+    color: var(--secondary-color);
+    font-size: 1.5rem;
+}
+
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    border-left: 4px solid var(--success-color);
+}
+
+.warning-message {
+    background-color: #fff3cd;
+    color: #856404;
+    border-left: 4px solid var(--warning-color);
+}
+
+.quantity {
+    font-size: 1.2rem;
+    margin: 5px 0;
+}
+
+.quantity-control {
+    margin-top: 10px;
+}
+
+.quantity-control label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.quantity-buttons {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-button {
+    background-color: #e0e0e0;
+    border: none;
+    width: 30px;
+    height: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.quantity-button:first-child {
+    border-radius: 3px 0 0 3px;
+}
+
+.quantity-button:last-child {
+    border-radius: 0 3px 3px 0;
+}
+
+.quantity-input {
+    width: 50px;
+    height: 30px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-left: none;
+    border-right: none;
+}
+
+.price-difference {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.next-step {
+    color: var(--primary-color);
+}
+
+/* Warehouse Map Styles */
+.map-description {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.warehouse-visualization {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.warehouse-map {
+    flex: 2;
+    min-width: 800px;
+    position: relative;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    height: 700px;
+    overflow: hidden;
+}
+
+.warehouse-grid {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    position: relative;
+}
+
+/* Warehouse Blueprint Styles */
+.warehouse-blueprint {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+.warehouse-entrance {
+    position: absolute;
+    bottom: 20px;
+    left: 60px;
+    width: 40px;
+    height: 40px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: var(--dark-gray);
+    z-index: 2;
+}
+
+.warehouse-aisle {
+    position: absolute;
+    height: 50px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.aisle-a {
+    top: 100px;
+    left: 60px;
+    width: 300px;
+}
+
+.aisle-b {
+    top: 250px;
+    left: 150px;
+    width: 200px;
+}
+
+.aisle-c {
+    top: 400px;
+    left: 100px;
+    width: 250px;
+}
+
+/* Aisle Shelves */
+.aisle-shelf {
+    position: absolute;
+    height: 20px;
+    background-color: #8B4513; /* Brown color for shelves */
+    z-index: 2;
+}
+
+.aisle-a-left {
+    top: 80px;
+    left: 60px;
+    width: 300px;
+}
+
+.aisle-a-right {
+    top: 150px;
+    left: 60px;
+    width: 300px;
+}
+
+.aisle-b-left {
+    top: 230px;
+    left: 150px;
+    width: 200px;
+}
+
+.aisle-b-right {
+    top: 300px;
+    left: 150px;
+    width: 200px;
+}
+
+.aisle-c-left {
+    top: 380px;
+    left: 100px;
+    width: 250px;
+}
+
+.aisle-c-right {
+    top: 450px;
+    left: 100px;
+    width: 250px;
+}
+
+/* Aisle Connectors */
+.aisle-connector {
+    position: absolute;
+    width: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    z-index: 2;
+}
+
+.connector-a-b {
+    top: 150px;
+    left: 350px;
+    height: 100px;
+}
+
+.connector-b-c {
+    top: 300px;
+    left: 100px;
+    height: 100px;
+}
+
+.product-location {
+    color: white;
+    border: 1px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-weight: bold;
+}
+
+.location-1 {
+    grid-column: 3;
+    grid-row: 1;
+    background-color: var(--primary-color);
+    border-color: #0056b3;
+    position: absolute;
+    top: 100px;
+    left: 150px;
+    width: 50px;
+    height: 50px;
+}
+
+.location-2 {
+    background-color: var(--primary-color);
+    border-color: #0056b3;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+}
+
+.location-3 {
+    background-color: var(--primary-color);
+    border-color: #0056b3;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+}
+
+.location-4 {
+    background-color: var(--primary-color);
+    border-color: #0056b3;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+}
+
+.location-5 {
+    background-color: var(--secondary-color);
+    border-color: #3a7bd5;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+}
+
+.location-6 {
+    background-color: var(--secondary-color);
+    border-color: #3a7bd5;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+}
+
+.location-7 {
+    background-color: var(--secondary-color);
+    border-color: #3a7bd5;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+}
+
+.location-8 {
+    background-color: var(--secondary-color);
+    border-color: #3a7bd5;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+}
+
+.location-9 {
+    background-color: var(--secondary-color);
+    border-color: #3a7bd5;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+}
+
+.location-10 {
+    background-color: var(--secondary-color);
+    border-color: #3a7bd5;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+}
+
+.location-number {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: var(--success-color);
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.route-path {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.route-segment {
+    stroke: var(--success-color);
+    stroke-width: 3;
+    stroke-dasharray: 5,5;
+    fill: none;
+}
+
+.route-point {
+    fill: var(--success-color);
+    /* Radius is now set directly in the SVG elements */
+}
+
+.start-point {
+    fill: var(--primary-color);
+}
+
+.route-label {
+    text-anchor: middle;
+    fill: var(--dark-gray);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.warehouse-info {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.picking-monitor, .route-stats, .route-instructions {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.picking-monitor h4, .route-stats h4, .route-instructions h4 {
+    margin-top: 0;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.route-instructions ol {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.route-instructions li {
+    margin-bottom: 5px;
+}
+
+.progress-container {
+    margin-top: 20px;
+}
+
+.progress-bar-container {
+    background-color: #e9ecef;
+    border-radius: 5px;
+    height: 10px;
+    margin-top: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Bullet styles for progress checkpoints */
+.checkpoint-dot {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.checkpoint-dot::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    z-index: -1;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.progress-checkpoint.completed .checkpoint-dot::before {
+    opacity: 1;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--success-color);
+    width: 0;
+    transition: width 0.5s ease;
+}
+
+.progress-checkpoints {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.progress-checkpoint {
+    text-align: center;
+    position: relative;
+    flex: 1;
+}
+
+.checkpoint-dot {
+    width: 15px;
+    height: 15px;
+    background-color: #e9ecef;
+    border: 2px solid var(--primary-color);
+    border-radius: 50%;
+    margin: 0 auto 5px;
+    transition: background-color 0.3s;
+}
+
+.progress-checkpoint.completed .checkpoint-dot {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.progress-checkpoint span {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.progress-checkpoint.completed span {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+/* Pallet Truck Animation */
+.pallet-truck {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: var(--accent-color);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.picking-action {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: var(--success-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 11;
+    animation: pulse 1s infinite;
+}
+
+/* Invoice Comparison Styles */
+.invoice-comparison {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.invoice {
+    flex: 1;
+    min-width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.invoice-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 15px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+}
+
+.invoice-header i {
+    margin-right: 10px;
+}
+
+.invoice-header-success {
+    background-color: var(--success-color);
+}
+
+.invoice-content {
+    padding: 15px;
+    background-color: white;
+}
+
+.invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.invoice-table th, .invoice-table td {
+    padding: 8px;
+    text-align: left;
+}
+
+.invoice-table th {
+    border-bottom: 1px solid #ddd;
+}
+
+.invoice-table tbody tr {
+    border-bottom: 1px solid #ddd;
+}
+
+.invoice-table tfoot tr {
+    border-top: 2px solid #ddd;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.highlight-row {
+    background-color: #fff3cd;
+}
+
+.success-row {
+    background-color: #d4edda;
+    color: #155724;
+    font-weight: bold;
+}
+
+.invoice-note {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Picking List Visualization Styles */
+.container-fluid {
+    width: 95%;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.picking-list-container {
+    max-width: none;
+}
+
+.picking-visualization-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+    justify-content: center;
+}
+
+.picking-left-panel {
+    flex: 1;
+    min-width: 250px;
+    max-width: 350px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.picking-right-panel {
+    flex: 1;
+    min-width: 250px;
+    max-width: 350px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.picking-center-panel {
+    flex: 2;
+    min-width: 400px;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.picking-center-panel h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.picking-center-panel h3 i {
+    margin-right: 10px;
+}
+
+.document-changes-card, .worker-details-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.document-changes-card h3, .worker-details-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+}
+
+.document-changes-card h3 i, .worker-details-card h3 i {
+    margin-right: 10px;
+}
+
+.changes-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.change-item {
+    display: flex;
+    gap: 10px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+.change-item:last-child {
+    border-bottom: none;
+}
+
+.change-time {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    height: fit-content;
+}
+
+.change-content {
+    flex-grow: 1;
+}
+
+.change-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--primary-color);
+}
+
+.change-description {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.change-item.pending .change-time {
+    background-color: #e0e0e0;
+    color: #777;
+}
+
+.change-item.pending .change-title,
+.change-item.pending .change-description {
+    color: #999;
+}
+
+.worker-profile {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.worker-avatar {
+    font-size: 3rem;
+    color: var(--primary-color);
+}
+
+.worker-info {
+    flex-grow: 1;
+}
+
+.worker-info h4 {
+    margin: 0 0 10px 0;
+    color: var(--primary-color);
+}
+
+.worker-info p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+}
+
+.worker-info p i {
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+    color: var(--secondary-color);
+}
+
+.current-task {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.current-task h4, .worker-stats h4 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.task-details p {
+    margin: 5px 0;
+    transition: all 0.3s ease;
+}
+
+.task-details p strong {
+    display: inline-block;
+    width: 120px;
+}
+
+.task-details p span {
+    display: inline-block;
+    position: relative;
+    padding: 2px 5px;
+    border-radius: 3px;
+}
+
+.task-details p span.animate__flash {
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+}
+
+.priority-normal {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.worker-stats {
+    flex-grow: 1;
+}
+
+.stat-item {
+    margin-bottom: 15px;
+}
+
+.stat-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.stat-value {
+    text-align: right;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.stat-bar {
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.stat-fill {
+    height: 100%;
+    background-color: var(--success-color);
+    border-radius: 4px;
+}
+
+/* Enhanced Warehouse Map Styles */
+.warehouse-map {
+    flex: 1;
+    height: 300px;
+    min-height: auto;
+    position: relative;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    overflow: hidden;
+    /* Removed margin-bottom to match worker-details-card */
+}
+
+/* Enhanced Progress Bar Styles */
+.progress-container {
+    margin-top: 10px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.progress-container h4 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+.progress-bar-container {
+    background-color: #e9ecef;
+    border-radius: 10px;
+    height: 15px;
+    margin-top: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: var(--success-color);
+    width: 0;
+    transition: width 0.5s ease;
+    border-radius: 10px;
+}
+
+.progress-checkpoints {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.progress-checkpoint {
+    text-align: center;
+    position: relative;
+    flex: 1;
+}
+
+.checkpoint-dot {
+    width: 20px;
+    height: 20px;
+    background-color: #e9ecef;
+    border: 3px solid var(--primary-color);
+    border-radius: 50%;
+    margin: 0 auto 8px;
+    transition: background-color 0.3s;
+}
+
+.progress-checkpoint.completed .checkpoint-dot {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.progress-checkpoint span {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: bold;
+}
+
+.progress-checkpoint.completed span {
+    color: var(--success-color);
+}
+
+/* Responsive Styles */
+@media (max-width: 1200px) {
+    .picking-visualization-container {
+        flex-wrap: wrap;
+    }
+
+    .picking-left-panel, .picking-right-panel {
+        flex: 1 1 40%;
+        max-width: 400px;
+        margin-bottom: 20px;
+    }
+
+    .picking-center-panel {
+        flex: 1 1 100%;
+        order: -1;
+        margin-bottom: 20px;
+        max-width: 800px;
+    }
+}
+
+@media (max-width: 992px) {
+    .picking-left-panel, .picking-right-panel {
+        flex: 1 1 100%;
+        max-width: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    .device-simulation, .warehouse-visualization, .invoice-comparison {
+        flex-direction: column;
+    }
+
+    /* Keep document-comparison in row direction */
+    .document-comparison {
+        flex-direction: row;
+        overflow-x: auto; /* Allow horizontal scrolling if needed */
+        width: 100%; /* Ensure it takes full width */
+        padding: 0; /* Remove any padding */
+    }
+
+    /* Keep conversion arrow horizontal for document-comparison */
+    .document-comparison .conversion-arrow {
+        transform: none;
+        margin: 0 5px; /* Reduced from 10px to save space */
+        min-width: 60px; /* Reduced from 80px to save space */
+        padding: 5px; /* Reduced from 10px to save space */
+    }
+
+    /* Other conversion arrows can still rotate */
+    .conversion-arrow:not(.document-comparison .conversion-arrow) {
+        transform: rotate(90deg);
+        margin: 10px 0;
+    }
+
+    /* Adjust document width for smaller screens */
+    .document {
+        min-width: 150px; /* Further reduced for smaller screens */
+        max-width: calc(50% - 10px); /* Further adjusted for smaller screens */
+    }
+
+    .warehouse-map {
+        height: 300px;
+        min-height: auto;
+    }
+
+    .picking-center-panel {
+        min-width: 300px;
+    }
+}
+
+@media (max-width: 576px) {
+    .warehouse-map {
+        height: 300px;
+        min-height: auto;
+    }
+
+    .procedure-card {
+        padding: 15px;
+    }
+
+    .document-changes-card, .worker-details-card {
+        padding: 15px;
+        height: 300px;
+    }
+}
+
+/* Tooltip styles */
+.tooltip-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: #6c757d;
+    color: white;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 16px;
+    font-size: 10px;
+    margin-left: 5px;
+    cursor: help;
+    position: relative;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.4;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
+.tooltip-icon:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Rack tooltip styles */
+.rack-tooltip {
+    position: absolute;
+    background: rgba(0,0,0,0.75);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+    white-space: nowrap;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+/* Pulsating animation for current location */
+@keyframes pulsate {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.current-location {
+    animation: pulsate 1.5s ease-in-out infinite;
+}
+
+/* Toast notification styles */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.toast {
+    background-color: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    animation: slideIn 0.3s ease-out forwards;
+    max-width: 300px;
+}
+
+.toast.success {
+    background-color: var(--success-color);
+}
+
+.toast.warning {
+    background-color: var(--warning-color);
+}
+
+.toast.error {
+    background-color: #dc3545;
+}
+
+.toast i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.toast.hide {
+    animation: slideOut 0.3s ease-in forwards;
+}
+
+/* Connectivity status indicator */
+.connectivity-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-left: 10px;
+}
+
+.connectivity-status.online {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+}
+
+.connectivity-status.offline {
+    background-color: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+}
+
+.connectivity-status i {
+    margin-right: 5px;
+    font-size: 0.7rem;
+}
+
+/* Wizard style transitions */
+.screen-fade-enter {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.screen-fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.screen-fade-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.screen-fade-exit-active {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+/* Interactive rack styles */
+.product-location {
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.product-location:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.5);
+    z-index: 5;
+}
+
+/* Highlight for current location */
+.product-location.current {
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.8);
+    z-index: 6;
+}
+
+/* Progress percentage display */
+.progress-percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #333;
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-shadow: 0 0 2px white;
+}
+
+/* Dropdown explanation styles */
+.dropdown-link {
+    margin-top: 8px;
+}
+
+.dropdown-link a {
+    color: #856404;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dropdown-link a:hover {
+    text-decoration: underline;
+}
+
+.dropdown-link a i {
+    margin-left: 5px;
+    transition: transform 0.3s;
+}
+
+.explanation-box {
+    background-color: #fff8e6;
+    border-left: 4px solid #ffc107;
+    padding: 10px;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    border-radius: 0 4px 4px 0;
+}
+
+.explanation-box p {
+    margin: 0;
+}
+
+/* Confirmation modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--primary-color);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #777;
+}
+
+.modal-body {
+    margin-bottom: 20px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-button {
+    padding: 8px 15px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.modal-button.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.modal-button.secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.modal-button.danger {
+    background-color: #dc3545;
+    color: white;
+}

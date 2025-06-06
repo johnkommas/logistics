@@ -1,0 +1,529 @@
+/* Apple-inspired CSS for Logistics ERP Visualization */
+
+:root {
+    /* Apple-inspired color palette */
+    --apple-primary: #0071e3;       /* Apple blue */
+    --apple-secondary: #f5f5f7;     /* Light gray background */
+    --apple-dark: #1d1d1f;          /* Almost black */
+    --apple-light: #ffffff;         /* White */
+    --apple-gray: #86868b;          /* Medium gray */
+    --apple-highlight: #2997ff;     /* Bright blue highlight */
+    --apple-success: #28cd41;       /* Green */
+    --apple-warning: #ff9f0a;       /* Orange */
+    --apple-danger: #ff3b30;        /* Red */
+
+    /* Apple-inspired typography */
+    --apple-font: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+    /* Animation durations */
+    --transition-short: 0.3s;
+    --transition-medium: 0.5s;
+    --transition-long: 0.8s;
+}
+
+/* Global styles */
+body {
+    font-family: var(--apple-font);
+    background-color: var(--apple-secondary);
+    color: var(--apple-dark);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 48px;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+}
+
+h2 {
+    font-size: 40px;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+}
+
+h3 {
+    font-size: 28px;
+    line-height: 1.2;
+}
+
+p {
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+/* Header */
+header {
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 16px 0;
+    box-shadow: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    transition: background-color var(--transition-medium);
+}
+
+header h1 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--apple-dark);
+}
+
+/* Procedure Selector Styles */
+.procedure-selector {
+    background-color: var(--apple-light);
+    padding: 80px 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+.procedure-selector h2 {
+    text-align: center;
+    margin-bottom: 50px;
+    color: var(--apple-dark);
+    font-weight: 600;
+}
+
+.procedure-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    justify-content: center;
+}
+
+.procedure-card {
+    background-color: var(--apple-secondary);
+    border-radius: 18px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+    text-align: center;
+    transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+}
+
+.procedure-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+    opacity: 0;
+    transition: opacity var(--transition-medium);
+}
+
+.procedure-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.procedure-card:hover::before {
+    opacity: 1;
+}
+
+.procedure-icon {
+    width: 70px;
+    height: 70px;
+    background-color: var(--apple-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 25px;
+    font-size: 1.8rem;
+    transition: transform var(--transition-medium), background-color var(--transition-medium);
+}
+
+.procedure-card:hover .procedure-icon {
+    transform: scale(1.1);
+    background-color: var(--apple-highlight);
+}
+
+.procedure-card h3 {
+    color: var(--apple-dark);
+    margin-bottom: 15px;
+    font-size: 22px;
+    font-weight: 600;
+    transition: color var(--transition-short);
+}
+
+.procedure-card:hover h3 {
+    color: var(--apple-primary);
+}
+
+.procedure-card p {
+    color: var(--apple-gray);
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Department Section Styles */
+.department-section {
+    margin: 60px 0;
+    padding: 40px;
+    background-color: var(--apple-light);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+}
+
+.department-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.department-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.department-icon {
+    font-size: 2.2rem;
+    margin-right: 20px;
+    color: var(--apple-primary);
+    transition: transform var(--transition-short);
+}
+
+.department-section:hover .department-icon {
+    transform: scale(1.1);
+}
+
+.department-title {
+    font-size: 28px;
+    color: var(--apple-dark);
+    font-weight: 600;
+}
+
+/* KPI Section Styles */
+.kpi-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+    margin-top: 40px;
+}
+
+.kpi-card {
+    background-color: var(--apple-light);
+    border-radius: 18px;
+    padding: 25px;
+    text-align: center;
+    transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.kpi-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.kpi-title {
+    font-size: 16px;
+    color: var(--apple-gray);
+    margin-bottom: 10px;
+}
+
+.kpi-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--apple-primary);
+    margin: 15px 0;
+    transition: color var(--transition-short);
+}
+
+.kpi-card:hover .kpi-value {
+    color: var(--apple-highlight);
+}
+
+.kpi-trend {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.trend-up {
+    color: var(--apple-success);
+}
+
+.trend-down {
+    color: var(--apple-danger);
+}
+
+/* Process Diagram Styles */
+.process-diagram {
+    margin: 50px 0;
+    padding: 40px;
+    background-color: var(--apple-light);
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+}
+
+.process-diagram h3 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--apple-dark);
+    font-weight: 600;
+}
+
+/* SVG Diagram Enhancements */
+#erp-diagram circle {
+    transition: r var(--transition-medium), fill var(--transition-medium);
+}
+
+#erp-diagram text {
+    transition: font-size var(--transition-medium);
+}
+
+#erp-diagram .department-circle:hover {
+    r: 65;
+}
+
+#erp-diagram .pulse-animation {
+    animation: applePulse 2s infinite;
+}
+
+@keyframes applePulse {
+    0% {
+        r: 80;
+        opacity: 1;
+    }
+    50% {
+        r: 85;
+        opacity: 0.8;
+    }
+    100% {
+        r: 80;
+        opacity: 1;
+    }
+}
+
+/* Connection line animations */
+.connection-line {
+    transition: stroke var(--transition-medium), stroke-width var(--transition-medium), stroke-dasharray var(--transition-medium);
+}
+
+.data-flow {
+    animation: appleDataFlow 3s infinite linear;
+    stroke-dasharray: 15;
+}
+
+@keyframes appleDataFlow {
+    to {
+        stroke-dashoffset: -30;
+    }
+}
+
+/* Footer Styles */
+footer {
+    background-color: var(--apple-dark);
+    color: var(--apple-gray);
+    text-align: center;
+    padding: 40px 0;
+    margin-top: 80px;
+}
+
+footer p {
+    font-size: 14px;
+}
+
+/* Apple-style animations */
+.animate__fadeIn {
+    animation: appleFadeIn var(--transition-long) forwards;
+}
+
+.animate__fadeInUp {
+    animation: appleFadeInUp var(--transition-long) forwards;
+}
+
+@keyframes appleFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes appleFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apple-style Tab Navigation */
+.tab-navigation {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    position: relative;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    padding-bottom: 10px;
+    z-index: 10; /* Ensure tab navigation is above other elements */
+    gap: 10px; /* Add consistent spacing between tabs */
+}
+
+.tab-navigation::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+}
+
+.tab-button {
+    background: linear-gradient(to bottom, #ffffff, var(--apple-secondary));
+    color: var(--apple-dark);
+    border: none;
+    padding: 14px 28px;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 24px;
+    cursor: pointer !important; /* Force cursor to be pointer */
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Apple-like easing */
+    position: relative;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.03);
+    z-index: 11; /* Ensure tab buttons are above other elements */
+    pointer-events: auto !important; /* Force pointer events to be enabled */
+    user-select: none; /* Prevent text selection */
+    letter-spacing: -0.01em; /* Subtle letter spacing adjustment */
+    outline: none; /* Remove default focus outline */
+}
+
+.tab-button:focus {
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3), 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.tab-button:hover {
+    background: linear-gradient(to bottom, #ffffff, #e8f0fe);
+    color: var(--apple-primary);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03);
+}
+
+.tab-button.active {
+    background: linear-gradient(135deg, var(--apple-primary), #0058b9);
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 6px 18px rgba(0, 113, 227, 0.25), 0 0 0 1px rgba(0, 113, 227, 0.1);
+    transform: translateY(-2px);
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    background-color: var(--apple-primary);
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 113, 227, 0.3);
+    display: block;
+}
+
+/* Tab Content Styles */
+.tab-content {
+    position: relative;
+    padding: 30px 0;
+    perspective: 1000px; /* For 3D effect on tab transitions */
+}
+
+.tab-pane {
+    display: none;
+    animation: appleFadeIn var(--transition-medium) forwards;
+    transform-origin: top center;
+    backface-visibility: hidden;
+    will-change: opacity, transform;
+}
+
+.tab-pane.active {
+    display: block;
+    animation: appleTabReveal 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+@keyframes appleTabReveal {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .kpi-section {
+        grid-template-columns: 1fr;
+    }
+
+    .procedure-cards {
+        grid-template-columns: 1fr;
+    }
+
+    h1 {
+        font-size: 36px;
+    }
+
+    h2 {
+        font-size: 30px;
+    }
+
+    .procedure-selector {
+        padding: 50px 0;
+    }
+
+    .tab-navigation {
+        justify-content: flex-start;
+        padding: 5px 0 15px 5px;
+        margin-bottom: 30px;
+        gap: 8px;
+    }
+
+    .tab-button {
+        padding: 12px 20px;
+        font-size: 14px;
+        border-radius: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.02);
+    }
+
+    .tab-button.active::after {
+        bottom: -6px;
+        width: 6px;
+        height: 6px;
+    }
+
+    .tab-content {
+        padding: 20px 0;
+    }
+}

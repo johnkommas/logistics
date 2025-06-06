@@ -1,0 +1,428 @@
+:root {
+    --primary-color: #0066cc;
+    --primary-color-rgb: 0, 102, 204;
+    --secondary-color: #4d94ff;
+    --accent-color: #ff9900;
+    --light-gray: #f5f5f5;
+    --dark-gray: #333333;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-main);
+    line-height: 1.6;
+    color: var(--dark-gray);
+    background-color: var(--light-gray);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 20px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    text-align: center;
+    font-size: 2.5rem;
+}
+
+/* Procedure Selector Styles */
+.procedure-selector {
+    background-color: #fff;
+    padding: 40px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.procedure-selector h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--primary-color);
+}
+
+/* Tab Navigation Styles */
+/* Note: These styles are overridden by apple-style.css */
+/* They are kept here for fallback purposes */
+.tab-navigation {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+    z-index: 10; /* Ensure tab navigation is above other elements */
+}
+
+.tab-button {
+    background-color: transparent;
+    border: none;
+    padding: 10px 20px;
+    margin: 0 5px;
+    font-size: 1rem;
+    color: var(--dark-gray);
+    cursor: pointer !important; /* Force cursor to be pointer */
+    border-radius: 5px 5px 0 0;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 11; /* Ensure tab buttons are above other elements */
+    pointer-events: auto !important; /* Force pointer events to be enabled */
+    user-select: none; /* Prevent text selection */
+}
+
+.tab-button:hover {
+    color: var(--primary-color);
+}
+
+.tab-button.active {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* This is overridden by apple-style.css */
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--primary-color);
+    border-radius: 3px 3px 0 0;
+}
+
+/* Tab Content Styles */
+.tab-content {
+    position: relative;
+}
+
+.tab-pane {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.procedure-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.procedure-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    width: 300px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.procedure-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.procedure-icon {
+    width: 80px;
+    height: 80px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 20px;
+    font-size: 2rem;
+    transition: transform 0.3s;
+}
+
+.procedure-card:hover .procedure-icon {
+    transform: scale(1.1);
+}
+
+.procedure-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+}
+
+.procedure-card p {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* Department Section Styles */
+.department-section {
+    margin: 30px 0;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.department-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.department-icon {
+    font-size: 2rem;
+    margin-right: 15px;
+    color: var(--primary-color);
+}
+
+.department-title {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+}
+
+/* Process Flow Styles */
+.process-flow {
+    margin: 20px 0;
+}
+
+.process-step {
+    display: flex;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.process-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: 15px;
+    width: 2px;
+    height: calc(100% + 15px);
+    background-color: var(--secondary-color);
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+    z-index: 1;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.step-description {
+    color: #666;
+}
+
+/* KPI Section Styles */
+.kpi-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.kpi-card {
+    flex: 1;
+    min-width: 200px;
+    padding: 15px;
+    background-color: var(--light-gray);
+    border-radius: 5px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.kpi-title {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.kpi-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 10px 0;
+}
+
+.kpi-trend {
+    font-size: 0.9rem;
+}
+
+.trend-up {
+    color: var(--success-color);
+}
+
+.trend-down {
+    color: var(--danger-color);
+}
+
+/* Process Diagram Styles */
+.process-diagram {
+    margin: 30px 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    overflow-x: auto;
+}
+
+.diagram-container {
+    display: flex;
+    justify-content: space-between;
+    min-width: 600px;
+}
+
+.diagram-step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+}
+
+.diagram-step:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.diagram-icon {
+    width: 60px;
+    height: 60px;
+    background-color: var(--secondary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 10px;
+    font-size: 1.5rem;
+}
+
+.diagram-text {
+    font-size: 0.9rem;
+}
+
+/* Footer Styles */
+footer {
+    background-color: var(--dark-gray);
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 50px;
+}
+
+/* Animation Styles */
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.department-circle {
+    transition: fill 0.3s, transform 0.3s;
+}
+
+.department-circle:hover {
+    fill: var(--accent-color);
+    transform: scale(1.1);
+}
+
+.connection-line {
+    transition: stroke 0.3s, stroke-width 0.3s;
+}
+
+/* Data Flow Animation */
+.data-flow {
+    animation: dataFlow 3s infinite;
+    stroke-dasharray: 10;
+}
+
+@keyframes dataFlow {
+    to {
+        stroke-dashoffset: -20;
+    }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .kpi-section {
+        flex-direction: column;
+    }
+
+    .process-step {
+        flex-direction: column;
+    }
+
+    .step-number {
+        margin-bottom: 10px;
+    }
+
+    .process-step:not(:last-child)::after {
+        display: none;
+    }
+
+    .procedure-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .procedure-card {
+        width: 100%;
+        max-width: 350px;
+    }
+}

@@ -1,0 +1,260 @@
+/* 3D Map Styles */
+.warehouse-map-3d {
+    flex: 1;
+    height: 70vh;
+    position: relative;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    overflow: hidden;
+    perspective: 1000px; /* Add perspective for 3D effect */
+}
+
+.warehouse-grid-3d {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    transform-style: preserve-3d; /* Enable 3D transformations */
+    transform: rotateX(30deg) rotateY(15deg); /* Initial 3D rotation */
+    transition: transform 0.5s ease;
+}
+
+.warehouse-floor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f5f5f5;
+    transform: translateZ(-10px);
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    background-image: linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px),
+                      linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+
+.warehouse-entrance-3d {
+    position: absolute;
+    bottom: 0;
+    left: 60px;
+    width: 40px;
+    height: 40px;
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: var(--dark-gray);
+    transform: translateZ(10px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.warehouse-aisle-3d {
+    position: absolute;
+    background-color: #e9ecef;
+    border: 1px solid #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    transform: translateZ(5px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.aisle-a-3d {
+    top: 100px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+}
+
+.aisle-b-3d {
+    top: 220px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+}
+
+.aisle-c-3d {
+    top: 380px;
+    left: 0;
+    width: 100%;
+    height: 40px;
+}
+
+.product-location-3d {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    color: white;
+    border: 1px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    transform: translateZ(15px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease;
+}
+
+.product-location-3d:hover {
+    transform: translateZ(25px) scale(1.1);
+}
+
+.location-1-3d {
+    top: 80px;
+    left: 150px;
+    background-color: var(--primary-color);
+    border-color: #0056b3;
+}
+
+.location-2-3d {
+    top: 200px;
+    left: 270px;
+    background-color: var(--secondary-color);
+    border-color: #3a7bd5;
+}
+
+.location-3-3d {
+    top: 360px;
+    left: 350px;
+    background-color: var(--secondary-color);
+    border-color: #3a7bd5;
+}
+
+.location-number-3d {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: var(--success-color);
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    transform: translateZ(5px);
+}
+
+.route-path-3d {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    transform-style: preserve-3d;
+}
+
+.route-segment-3d {
+    stroke: var(--success-color);
+    stroke-width: 3;
+    stroke-dasharray: 5,5;
+    fill: none;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+}
+
+.route-point-3d {
+    fill: var(--success-color);
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+}
+
+.start-point-3d {
+    fill: var(--primary-color);
+}
+
+.route-label-3d {
+    text-anchor: middle;
+    fill: var(--dark-gray);
+    font-size: 12px;
+    font-weight: bold;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+}
+
+.pallet-truck-3d {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: var(--accent-color);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 10;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transform: translateZ(20px);
+    transition: left 0.5s linear, top 0.5s linear, transform 0.5s ease;
+}
+
+.picking-action-3d {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: var(--success-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    z-index: 11;
+    animation: pulse 1s infinite;
+    transform: translateZ(25px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* Controls for 3D map */
+.map-controls {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 5px;
+    z-index: 20;
+}
+
+.map-control-button {
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: background-color 0.3s;
+}
+
+.map-control-button:hover {
+    background-color: #f0f0f0;
+}
+
+/* Map toggle button */
+.map-toggle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 20;
+    padding: 5px 10px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
+}
+
+.map-toggle:hover {
+    background-color: var(--accent-color);
+}
